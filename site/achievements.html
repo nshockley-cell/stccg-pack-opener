@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Achievements</title>
+  <link rel="stylesheet" href="style.css?v=10">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    @font-face {
+      font-family: 'Futura';
+      src: url('fonts/FuturaLTCondensedLight-Italic.ttf?v=2') format('truetype');
+      font-display: block;
+    }
+
+    .achievements-grid {
+      display: block;
+      padding: 16px;
+    }
+
+    .achievement-section {
+      margin-bottom: 28px;
+    }
+
+    .achievement-section-title {
+      color: #ffffff;
+      font-family: 'Futura', sans-serif;
+      font-size: 1.35rem;
+      margin: 8px 0 12px 0;
+    }
+
+    .achievements-section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .achievement-card {
+      background: #0b1a2a;
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid #1e3a5f;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .achievement-card.unlocked {
+      border-color: #0ea5e9;
+      background: linear-gradient(135deg, #0b1a2a 0%, #0f2847 100%);
+    }
+
+    .achievement-card.unlocked::after {
+      content: 'Completed';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-22deg);
+      padding: 6px 10px;
+      background: rgba(14,165,233,0.65);
+      color: #fff;
+      font-family: 'Futura', sans-serif;
+      font-size: 1.035rem;
+      border-radius: 6px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .achievement-card.locked {
+      opacity: 0.6;
+    }
+
+    .achievement-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .achievement-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .achievement-badge {
+      font-size: 3rem;
+      filter: grayscale(1);
+      opacity: 0.3;
+    }
+
+    .achievement-card.unlocked .achievement-badge {
+      filter: grayscale(0);
+      opacity: 1;
+      animation: badgePulse 0.6s ease-out;
+    }
+
+    @keyframes badgePulse {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .achievement-badge img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+
+    .achievement-detail .achievement-badge {
+      filter: grayscale(0);
+      opacity: 1;
+    }
+
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-title {
+      font-family: 'Futura', sans-serif;
+      font-size: 1.3rem;
+      color: #f8fafc;
+      margin: 0 0 6px 0;
+    }
+
+    .achievement-description {
+      font-family: 'Futura', sans-serif;
+      font-size: 0.95rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    .achievement-progress {
+      margin-top: 16px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #1e3a5f;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-text {
+      font-family: 'Futura', sans-serif;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .achievement-card.unlocked .progress-text {
+      color: #0ea5e9;
+      font-weight: bold;
+    }
+
+    .unlocked-stamp {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(14,165,233,0.2);
+      color: #0ea5e9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'Futura', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid #0ea5e9;
+    }
+
+    .stats-panel {
+      background: #0b1a2a;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px;
+      border: 2px solid #1e3a5f;
+      text-align: center;
+    }
+
+    .stats-panel h3 {
+      font-family: 'Futura', sans-serif;
+      color: #f8fafc;
+      margin: 0 0 16px 0;
+      font-size: 1.5rem;
+    }
+
+    .stats-numbers {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-value {
+      font-family: 'Futura', sans-serif;
+      font-size: 2.5rem;
+      color: #0ea5e9;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'Futura', sans-serif;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* Toast notification */
+    .achievement-toast {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: linear-gradient(135deg, #0b1a2a, #0f2847);
+      color: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 2px solid #0ea5e9;
+      font-family: 'Futura', sans-serif;
+      z-index: 4000;
+      opacity: 0;
+      transform: translateX(400px);
+      transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+    }
+
+    .achievement-toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .achievement-toast .badge {
+      font-size: 2rem;
+    }
+
+    .achievement-toast .content {
+      flex: 1;
+    }
+
+    .achievement-toast .title {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+
+    .achievement-toast .name {
+      font-size: 1.1rem;
+      color: #f8fafc;
+    }
+
+    /* Detail view styles */
+    .achievement-detail {
+      padding: 12px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .achievement-detail h2 {
+      margin: 0 0 12px 0;
+      color: #fff;
+      font-family: 'Futura', sans-serif;
+    }
+    .back-button {
+      margin-bottom: 12px;
+    }
+    .back-button button {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: #fff;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Futura', sans-serif;
+      transition: all 0.2s ease;
+    }
+    .back-button button:hover {
+      background: linear-gradient(135deg, #0284c7, #1d4ed8);
+      transform: translateY(-1px);
+    }
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .pairs-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card-pair {
+      background: #0b1a2a;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .card-pair.complete {
+      border-color: #0ea5e9;
+      background: #0f2233;
+    }
+    .card-pair.incomplete {
+      opacity: 1;
+    }
+    .card-pair.incomplete .pair-card.uncollected img {
+      opacity: 0.5;
+      filter: grayscale(0.7);
+    }
+    .card-pair.incomplete .pair-card.uncollected .card-info {
+      opacity: 0.5;
+      filter: grayscale(0.7);
+    }
+    .card-pair.incomplete .pair-card.collected img {
+      opacity: 0.5;
+      filter: grayscale(0.7);
+    }
+    .card-pair .pair-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 140px;
+      text-align: center;
+    }
+    .card-pair .pair-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .card-pair .pair-card .card-info {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    .card-pair .pair-card.collected .card-info {
+      color: #0ea5e9;
+    }
+    .card-pair.incomplete .pair-card.collected .card-info {
+      color: #0ea5e9;
+      filter: brightness(1.5);
+      text-shadow: 0 0 8px rgba(14, 165, 233, 0.4);
+    }
+    .collection-card {
+      background: #0b1a2a;
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px;
+      flex-shrink: 0;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .collection-card:hover {
+      background: #0f2233;
+    }
+    .collection-card.collected {
+      border: 2px solid #0ea5e9;
+    }
+    .collection-card.uncollected {
+      opacity: 0.4;
+      filter: grayscale(0.5);
+    }
+    .collection-card.uncollected:hover {
+      opacity: 0.6;
+    }
+    .collection-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+    .collection-card .card-info {
+      font-size: 1rem;
+      color: #f8fafc;
+      line-height: 1.2;
+      font-family: 'Futura', sans-serif;
+    }
+
+    /* Card modal */
+    .card-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .card-modal.show {
+      display: flex;
+    }
+    .card-modal-content {
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+    }
+    .card-modal-content img {
+      max-width: 600px;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .card-modal-info {
+      margin-top: 16px;
+      color: #f8fafc;
+      font-family: 'Futura', sans-serif;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .badge-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .badge-modal.show {
+      display: flex;
+    }
+    .badge-modal-content {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      cursor: default;
+    }
+    .badge-modal-content img,
+    .badge-modal-content .badge-emoji {
+      max-width: 300px;
+      max-height: 300px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .badge-modal-content .badge-emoji {
+      font-size: 16rem;
+      line-height: 1;
+    }
+    .badge-modal-title {
+      color: #f1f5f9;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Achievements</h1>
+    <p>Track your collection milestones and unlock special badges.</p>
+  </header>
+
+  <nav class="topnav">
+    <a href="index.html">Pack Opener</a>
+    <a href="collection.html">Collection</a>
+  </nav>
+
+  <div id="stats-panel" class="stats-panel">
+    <h3>Your Progress</h3>
+    <div class="stats-numbers">
+      <div class="stat">
+        <div class="stat-value" id="unlocked-count">0</div>
+        <div class="stat-label">Unlocked</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="total-count">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="completion-percent">0%</div>
+        <div class="stat-label">Complete</div>
+      </div>
+    </div>
+  </div>
+
+  <main id="main-view">
+    <div id="achievements-grid" class="achievements-grid"></div>
+    <div id="detail-view" style="display:none;"></div>
+  </main>
+
+  <div id="card-modal" class="card-modal">
+    <div class="card-modal-content" onclick="event.stopPropagation()">
+      <img id="modal-image" src="" alt="">
+      <div id="modal-info" class="card-modal-info"></div>
+    </div>
+  </div>
+
+  <div id="pair-modal" class="card-modal">
+    <div id="pair-modal-content" class="card-modal-content" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <div id="badge-modal" class="badge-modal">
+    <div class="badge-modal-content" onclick="event.stopPropagation()">
+      <div id="badge-modal-image"></div>
+      <div id="badge-modal-title" class="badge-modal-title"></div>
+    </div>
+  </div>
+
+  <div id="achievement-toast" class="achievement-toast"></div>
+
+  <script>
+    let achievements = [];
+    let collection = {};
+    let unlockedAchievements = [];
+
+    function loadCollection(){
+      try{ return JSON.parse(localStorage.getItem('stccg_collection')||'{}'); }catch(e){return{}}
+    }
+
+    function loadUnlockedAchievements(){
+      try{ return JSON.parse(localStorage.getItem('stccg_achievements')||'[]'); }catch(e){return[]}
+    }
+
+    function saveUnlockedAchievements(list){
+      localStorage.setItem('stccg_achievements', JSON.stringify(list));
+    }
+
+    function checkAchievement(achievement){
+      if(achievement.type === 'paired' && achievement.pairs){
+        // For paired achievements, check if ALL pairs are complete
+        return achievement.pairs.every(pair => {
+          return pair.every(cardId => collection[cardId] && collection[cardId].count > 0);
+        });
+      } else {
+        // Standard achievement
+        return achievement.required_cards.every(cardId => {
+          return collection[cardId] && collection[cardId].count > 0;
+        });
+      }
+    }
+
+    function getProgress(achievement){
+      if(achievement.type === 'paired' && achievement.pairs){
+        // Count complete pairs (both cards owned)
+        const completePairs = achievement.pairs.filter(pair => {
+          return pair.every(cardId => collection[cardId] && collection[cardId].count > 0);
+        }).length;
+        return {
+          owned: completePairs,
+          total: achievement.pairs.length,
+          percent: Math.round((completePairs / achievement.pairs.length) * 100)
+        };
+      } else {
+        // Standard achievement
+        const owned = achievement.required_cards.filter(cardId => {
+          return collection[cardId] && collection[cardId].count > 0;
+        }).length;
+        return {
+          owned: owned,
+          total: achievement.required_cards.length,
+          percent: Math.round((owned / achievement.required_cards.length) * 100)
+        };
+      }
+    }
+
+    function renderBadge(achievement){
+      // Check if badge is an image path or emoji
+      if(achievement.badge && (achievement.badge.endsWith('.png') || achievement.badge.endsWith('.jpg') || achievement.badge.endsWith('.jpeg') || achievement.badge.endsWith('.webp'))){
+        return `<img src="${achievement.badge}" alt="${achievement.title}">`;
+      }
+      return achievement.badge || '🏆';
+    }
+
+    function renderAchievements(){
+      // Capitalize the first alphabetical character of a description
+      function capitalizeFirst(str){
+        if(!str) return str;
+        return str.replace(/(^\s*[^A-Za-z0-9]*)([a-zA-Z])/, function(_, p1, p2){
+          return p1 + p2.toUpperCase();
+        });
+      }
+      const container = document.getElementById('achievements-grid');
+      container.innerHTML = '';
+
+      // Helper to create a single achievement card element
+      function createCardEl(achievement){
+        const isUnlocked = unlockedAchievements.includes(achievement.id);
+        const progress = getProgress(achievement);
+        const card = document.createElement('div');
+        card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        card.innerHTML = `
+          ${isUnlocked ? '<div class="unlocked-stamp">Unlocked ✓</div>' : ''}
+          <div class="achievement-header">
+            <div class="achievement-badge">${renderBadge(achievement)}</div>
+            <div class="achievement-info">
+              <h3 class="achievement-title">${achievement.title}</h3>
+              <p class="achievement-description">${capitalizeFirst(achievement.description)}</p>
+            </div>
+          </div>
+          <div class="achievement-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progress.percent}%"></div>
+            </div>
+            <div class="progress-text">
+              ${achievement.type === 'paired' ? `${progress.owned}/${progress.total} Pairs Collected` : `${progress.owned}/${progress.total} Cards Collected`}
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', () => showAchievementDetail(achievement));
+        return card;
+      }
+
+      // Section definitions (IDs in desired order)
+      const sections = [
+        { title: 'Fully Staffed', ids: ['enterprise_d_senior_staff','enterprise_e_senior_staff','enterprise_senior_staff','ds9_senior_staff','voyager_senior_staff','the_captains','perfect_command'] },
+        { title: 'The Holodeck', ids: ['dixon_hill','captain_proton','agent_bashir'] },
+        { title: 'The Fleets', ids: ['ships_of_the_line','a_good_day_to_die','romulan_ships'] }
+      ];
+
+      const used = new Set();
+
+      // Render each named section
+      sections.forEach(section => {
+        const secEl = document.createElement('div');
+        secEl.className = 'achievement-section';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'achievement-section-title';
+        titleEl.textContent = section.title;
+        secEl.appendChild(titleEl);
+
+        const gridEl = document.createElement('div');
+        gridEl.className = 'achievements-section-grid';
+
+        section.ids.forEach(id => {
+          const ach = achievements.find(a => a.id === id);
+          if(ach){
+            gridEl.appendChild(createCardEl(ach));
+            used.add(id);
+          }
+        });
+
+        secEl.appendChild(gridEl);
+        container.appendChild(secEl);
+      });
+
+      // Collections: everything else
+      const remaining = achievements.filter(a => !used.has(a.id));
+      if(remaining.length){
+        const secEl = document.createElement('div');
+        secEl.className = 'achievement-section';
+        const titleEl = document.createElement('div');
+        titleEl.className = 'achievement-section-title';
+        titleEl.textContent = 'Collections';
+        secEl.appendChild(titleEl);
+
+        const gridEl = document.createElement('div');
+        gridEl.className = 'achievements-section-grid';
+        remaining.forEach(a => gridEl.appendChild(createCardEl(a)));
+        secEl.appendChild(gridEl);
+        container.appendChild(secEl);
+      }
+
+      // Update stats
+      const unlockedCount = achievements.reduce((n,a) => n + (unlockedAchievements.includes(a.id) ? 1 : 0), 0);
+      document.getElementById('unlocked-count').textContent = unlockedCount;
+      document.getElementById('total-count').textContent = achievements.length;
+      document.getElementById('completion-percent').textContent = achievements.length > 0 ? Math.round((unlockedCount / achievements.length) * 100) + '%' : '0%';
+    }
+
+    function showAchievementToast(achievement){
+      const toast = document.getElementById('achievement-toast');
+      toast.innerHTML = `
+        <div class="badge">${renderBadge(achievement)}</div>
+        <div class="content">
+          <div class="title">Achievement Unlocked!</div>
+          <div class="name">${achievement.title}</div>
+        </div>
+      `;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // Check for newly unlocked achievements
+    function checkForNewUnlocks(){
+      const newUnlocks = [];
+      achievements.forEach(achievement => {
+        if(!unlockedAchievements.includes(achievement.id) && checkAchievement(achievement)){
+          unlockedAchievements.push(achievement.id);
+          newUnlocks.push(achievement);
+        }
+      });
+      
+      if(newUnlocks.length > 0){
+        saveUnlockedAchievements(unlockedAchievements);
+        // Show toast for first new unlock
+        if(newUnlocks[0]) showAchievementToast(newUnlocks[0]);
+        renderAchievements();
+      }
+    }
+
+    let cardsData = [];
+    let setsData = [];
+    let setCodeMap = {};
+
+    async function showAchievementDetail(achievement){
+      const detailView = document.getElementById('detail-view');
+      const gridView = document.getElementById('achievements-grid');
+      
+      // Load all cards if not already loaded
+      if(cardsData.length === 0){
+        cardsData = await fetch('cards.json?v=' + Date.now()).then(r=>r.json());
+      }
+
+      // Load sets data if not already loaded
+      if(setsData.length === 0){
+        setsData = await fetch('sets.json?v=' + Date.now()).then(r=>r.json());
+        // Create a map from short_code to set_name
+        setsData.forEach(set => {
+          setCodeMap[set.short_code] = set.set_name;
+        });
+      }
+
+      // Handle paired achievements differently
+      if(achievement.type === 'paired' && achievement.pairs){
+        const progress = getProgress(achievement);
+        detailView.innerHTML = `
+          <div class="back-button"><button onclick="goBackToGrid()">← Back to Achievements</button></div>
+          <div class="achievement-detail">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 20px;">
+              <div class="achievement-badge" style="cursor: pointer;" onclick="showBadgeModal('${achievement.id}')">
+                ${renderBadge(achievement)}
+              </div>
+              <h2 style="margin: 0; font-size: 2rem;">${achievement.title}</h2>
+            </div>
+            <p style="text-align: center; margin-bottom: 20px; color: #94a3b8;">${progress.owned}/${progress.total} Pairs Collected</p>
+            <div class="pairs-grid" id="pairs-grid"></div>
+          </div>
+        `;
+
+        const pairsGrid = document.getElementById('pairs-grid');
+        achievement.pairs.forEach(pair => {
+          const [commanderId, shipId] = pair;
+          const commander = cardsData.find(c => c.ID === commanderId);
+          const ship = cardsData.find(c => c.ID === shipId);
+          
+          if(!commander || !ship) return;
+          
+          const hasCommander = collection[commanderId] && collection[commanderId].count > 0;
+          const hasShip = collection[shipId] && collection[shipId].count > 0;
+          const pairComplete = hasCommander && hasShip;
+          
+          const pairEl = document.createElement('div');
+          pairEl.className = 'card-pair' + (pairComplete ? ' complete' : ' incomplete');
+          pairEl.innerHTML = `
+            <div class="pair-card ${hasCommander ? 'collected' : 'uncollected'}">
+              <img src="${commander['File Name']||''}" alt="${commander.Name||''}" onerror="this.style.display='none';">
+              <div class="card-info">
+                <div>${hasCommander ? '✓ ' : ''}${commander.Name||''}</div>
+                <div style="font-size:0.85rem; color:#64748b;">${setCodeMap[commanderId.split('-')[0]] || commanderId.split('-')[0]}</div>
+              </div>
+            </div>
+            <div class="pair-card ${hasShip ? 'collected' : 'uncollected'}">
+              <img src="${ship['File Name']||''}" alt="${ship.Name||''}" onerror="this.style.display='none';">
+              <div class="card-info">
+                <div>${hasShip ? '✓ ' : ''}${ship.Name||''}</div>
+                <div style="font-size:0.85rem; color:#64748b;">${setCodeMap[shipId.split('-')[0]] || shipId.split('-')[0]}</div>
+              </div>
+            </div>
+          `;
+
+          // Prepare counts and rarity abbreviations for the pair modal
+          const commanderCount = (collection[commanderId] && collection[commanderId].count) || 0;
+          const shipCount = (collection[shipId] && collection[shipId].count) || 0;
+          const commanderRarity = commander.Rarity || commander['Rarity'] || '';
+          const shipRarity = ship.Rarity || ship['Rarity'] || '';
+          const commanderRarityAbbr = commanderRarity ? ` (${commanderRarity.charAt(0).toUpperCase()})` : '';
+          const shipRarityAbbr = shipRarity ? ` (${shipRarity.charAt(0).toUpperCase()})` : '';
+
+          // If the pair is complete, clicking the pair shows the paired modal (larger, kept side-by-side)
+          pairEl.addEventListener('click', () => {
+            if(pairComplete){
+              showPairModal(commander, ship, commanderCount, shipCount, commanderRarityAbbr, shipRarityAbbr);
+            }
+          });
+          pairsGrid.appendChild(pairEl);
+        });
+
+        gridView.style.display = 'none';
+        detailView.style.display = 'block';
+        document.getElementById('stats-panel').style.display = 'none';
+        return;
+      }
+
+      // Get cards for this achievement in the specified order
+      const achievementCards = achievement.required_cards.map(cardId => {
+        return cardsData.find(c => c.ID === cardId);
+      }).filter(c => c); // Remove any nulls
+
+      // Check if this is a senior staff achievement (has ship as first card)
+      const isSeniorStaff = achievement.id.includes('senior_staff');
+      const isDixonHill = achievement.id === 'dixon_hill';
+      const isAgentBashir = achievement.id === 'agent_bashir';
+      const isCaptainProton = achievement.id === 'captain_proton';
+      const isFerengiGreed = achievement.id === 'ferengi_greed';
+      const isScanForLifeForms = achievement.id === 'scan_for_life_forms';
+      
+      let topCards = null;
+      let mainCards = achievementCards;
+      
+      if(isSeniorStaff){
+        topCards = [achievementCards[0]]; // Just the ship
+        mainCards = achievementCards.slice(1);
+      } else if(isDixonHill || isAgentBashir || isCaptainProton){
+        topCards = [achievementCards[0], achievementCards[1], achievementCards[2]]; // Holodeck, Holosuite, Holoprogram
+        mainCards = achievementCards.slice(3); // Characters and items
+      } else if(isFerengiGreed || isScanForLifeForms){
+        topCards = [achievementCards[0]]; // The Ferengi Rules of Acquisition or Scanning For Life Forms
+        mainCards = achievementCards.slice(1); // Individual rules or life-forms
+      }
+      
+      detailView.innerHTML = `
+        <div class="back-button"><button onclick="goBackToGrid()">← Back to Achievements</button></div>
+        <div class="achievement-detail">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 20px;">
+            <div class="achievement-badge" style="cursor: pointer;" onclick="showBadgeModal('${achievement.id}')">
+              ${renderBadge(achievement)}
+            </div>
+            <h2 style="margin: 0; font-size: 2rem;">${achievement.title}</h2>
+          </div>
+          ${topCards ? '<div id="top-cards" style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;"></div>' : ''}
+          <div class="cards-grid" id="cards-grid"></div>
+        </div>
+      `;
+      
+      // Render top cards if present
+      if(topCards){
+        const topContainer = document.getElementById('top-cards');
+        // For the holoprogram achievements we want the first two (Holodeck, Holosuite)
+        // centered on a top row and the Holoprogram centered on a second row below.
+        if((isDixonHill || isAgentBashir || isCaptainProton) && topCards.length >= 3){
+          const row1 = document.createElement('div');
+          row1.style.display = 'flex';
+          row1.style.justifyContent = 'center';
+          row1.style.gap = '12px';
+          row1.style.marginBottom = '12px';
+
+          [topCards[0], topCards[1]].forEach(card => {
+            const cardEl = document.createElement('div');
+            const isCollected = collection[card.ID] && collection[card.ID].collected;
+            cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
+
+            const img = document.createElement('img');
+            img.src = card['File Name']||'';
+            img.alt = card.Name||'';
+            img.onerror = function(){ this.style.display='none'; };
+
+            const info = document.createElement('div');
+            info.className = 'card-info';
+            const count = (collection[card.ID] && collection[card.ID].count) || 0;
+            const checkmark = isCollected ? '✓ ' : '';
+            const rarity = card.Rarity || card['Rarity'] || '';
+            const rarityAbbr = rarity ? ` (${rarity.charAt(0).toUpperCase()})` : '';
+            const setCode = card.ID ? card.ID.split('-')[0] : '';
+            const setName = setCodeMap[setCode] || setCode;
+            info.innerHTML = `${checkmark}${card.Name||''}${rarityAbbr}<br><span style="font-size:0.85rem; color:#64748b;">${setName}</span><br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
+
+            cardEl.appendChild(img);
+            cardEl.appendChild(info);
+            cardEl.addEventListener('click', () => showCardModal(card, count, rarityAbbr));
+            row1.appendChild(cardEl);
+          });
+
+          const row2 = document.createElement('div');
+          row2.style.display = 'flex';
+          row2.style.justifyContent = 'center';
+          row2.style.gap = '12px';
+
+          const prog = topCards[2];
+          const progEl = document.createElement('div');
+          const isCollectedProg = collection[prog.ID] && collection[prog.ID].collected;
+          progEl.className = 'collection-card' + (isCollectedProg ? ' collected' : ' uncollected');
+
+          const imgP = document.createElement('img');
+          imgP.src = prog['File Name']||'';
+          imgP.alt = prog.Name||'';
+          imgP.onerror = function(){ this.style.display='none'; };
+
+          const infoP = document.createElement('div');
+          infoP.className = 'card-info';
+          const countP = (collection[prog.ID] && collection[prog.ID].count) || 0;
+          const checkmarkP = isCollectedProg ? '✓ ' : '';
+          const rarityP = prog.Rarity || prog['Rarity'] || '';
+          const rarityAbbrP = rarityP ? ` (${rarityP.charAt(0).toUpperCase()})` : '';
+          const setCodeP = prog.ID ? prog.ID.split('-')[0] : '';
+          const setNameP = setCodeMap[setCodeP] || setCodeP;
+          infoP.innerHTML = `${checkmarkP}${prog.Name||''}${rarityAbbrP}<br><span style="font-size:0.85rem; color:#64748b;">${setNameP}</span><br><span style="font-size:0.9rem; color:#94a3b8;">x${countP}</span>`;
+
+          progEl.appendChild(imgP);
+          progEl.appendChild(infoP);
+          progEl.addEventListener('click', () => showCardModal(prog, countP, rarityAbbrP));
+          row2.appendChild(progEl);
+
+          topContainer.appendChild(row1);
+          topContainer.appendChild(row2);
+        } else {
+          topCards.forEach(card => {
+            const cardEl = document.createElement('div');
+            const isCollected = collection[card.ID] && collection[card.ID].collected;
+            cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
+
+            const img = document.createElement('img');
+            img.src = card['File Name']||'';
+            img.alt = card.Name||'';
+            img.onerror = function(){ this.style.display='none'; };
+
+            const info = document.createElement('div');
+            info.className = 'card-info';
+            const count = (collection[card.ID] && collection[card.ID].count) || 0;
+            const checkmark = isCollected ? '✓ ' : '';
+            const rarity = card.Rarity || card['Rarity'] || '';
+            const rarityAbbr = rarity ? ` (${rarity.charAt(0).toUpperCase()})` : '';
+            const setCode = card.ID ? card.ID.split('-')[0] : '';
+            const setName = setCodeMap[setCode] || setCode;
+            info.innerHTML = `${checkmark}${card.Name||''}${rarityAbbr}<br><span style="font-size:0.85rem; color:#64748b;">${setName}</span><br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
+
+            cardEl.appendChild(img);
+            cardEl.appendChild(info);
+            cardEl.addEventListener('click', () => showCardModal(card, count, rarityAbbr));
+            topContainer.appendChild(cardEl);
+          });
+        }
+      }
+      
+      const grid = document.getElementById('cards-grid');
+      // Special rendering for Ferengi Rules layout: one top book, then two rows of six rule cards,
+      // then a fourth row with three cards (ALT-070 left, then two Gold-Pressed Latinum).
+      if(isFerengiGreed){
+        // Render mainCards as three centered rows: 6, 6, then remaining (3)
+        const row1 = document.createElement('div');
+        row1.style.display = 'flex';
+        row1.style.justifyContent = 'center';
+        row1.style.gap = '12px';
+        row1.style.marginBottom = '12px';
+
+        const row2 = document.createElement('div');
+        row2.style.display = 'flex';
+        row2.style.justifyContent = 'center';
+        row2.style.gap = '12px';
+        row2.style.marginBottom = '12px';
+
+        const row3 = document.createElement('div');
+        row3.style.display = 'flex';
+        row3.style.justifyContent = 'center';
+        row3.style.gap = '12px';
+
+        // helper to create a card element
+        function makeCardElement(card){
+          const cardEl = document.createElement('div');
+          const isCollected = collection[card.ID] && collection[card.ID].collected;
+          cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
+
+          const img = document.createElement('img');
+          img.src = card['File Name']||'';
+          img.alt = card.Name||'';
+          img.onerror = function(){ this.style.display='none'; };
+
+          const info = document.createElement('div');
+          info.className = 'card-info';
+          const count = (collection[card.ID] && collection[card.ID].count) || 0;
+          const checkmark = isCollected ? '✓ ' : '';
+          const rarity = card.Rarity || card['Rarity'] || '';
+          const rarityAbbr = rarity ? ` (${rarity.charAt(0).toUpperCase()})` : '';
+          const setCode = card.ID ? card.ID.split('-')[0] : '';
+          const setName = setCodeMap[setCode] || setCode;
+          info.innerHTML = `${checkmark}${card.Name||''}${rarityAbbr}<br><span style="font-size:0.85rem; color:#64748b;">${setName}</span><br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
+
+          cardEl.appendChild(img);
+          cardEl.appendChild(info);
+          cardEl.addEventListener('click', () => showCardModal(card, count, rarityAbbr));
+          return cardEl;
+        }
+
+        // first 6
+        for(let i=0;i<6 && i<mainCards.length;i++){
+          row1.appendChild(makeCardElement(mainCards[i]));
+        }
+        // next 6
+        for(let i=6;i<12 && i<mainCards.length;i++){
+          row2.appendChild(makeCardElement(mainCards[i]));
+        }
+        // remaining (expected 3)
+        for(let i=12;i<mainCards.length;i++){
+          row3.appendChild(makeCardElement(mainCards[i]));
+        }
+
+        grid.appendChild(row1);
+        grid.appendChild(row2);
+        grid.appendChild(row3);
+      } else {
+        // If the achievement specifies display_columns, switch to CSS grid with that many columns
+        if(achievement.display_columns && Number.isFinite(achievement.display_columns)){
+          grid.style.display = 'grid';
+          grid.style.gridTemplateColumns = `repeat(${achievement.display_columns}, minmax(0, 1fr))`;
+          grid.style.gap = '12px';
+          grid.style.justifyItems = 'center';
+        }
+        mainCards.forEach(card=>{
+          const cardEl = document.createElement('div');
+          const isCollected = collection[card.ID] && collection[card.ID].collected;
+          cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
+          
+          const img = document.createElement('img');
+          img.src = card['File Name']||'';
+          img.alt = card.Name||'';
+          img.onerror = function(){ this.style.display='none'; };
+          
+          const info = document.createElement('div');
+          info.className = 'card-info';
+          const count = (collection[card.ID] && collection[card.ID].count) || 0;
+          const checkmark = isCollected ? '✓ ' : '';
+          const rarity = card.Rarity || card['Rarity'] || '';
+          const rarityAbbr = rarity ? ` (${rarity.charAt(0).toUpperCase()})` : '';
+          const setCode = card.ID ? card.ID.split('-')[0] : '';
+          const setName = setCodeMap[setCode] || setCode;
+          info.innerHTML = `${checkmark}${card.Name||''}${rarityAbbr}<br><span style="font-size:0.85rem; color:#64748b;">${setName}</span><br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
+          
+          cardEl.appendChild(img);
+          cardEl.appendChild(info);
+          cardEl.addEventListener('click', () => showCardModal(card, count, rarityAbbr));
+          grid.appendChild(cardEl);
+        });
+      }
+      
+      gridView.style.display = 'none';
+      detailView.style.display = 'block';
+      document.getElementById('stats-panel').style.display = 'none';
+    }
+
+    function goBackToGrid(){
+      document.getElementById('detail-view').style.display = 'none';
+      document.getElementById('achievements-grid').style.display = 'grid';
+      document.getElementById('stats-panel').style.display = 'block';
+    }
+
+    function showCardModal(card, count, rarityAbbr){
+      const modal = document.getElementById('card-modal');
+      const img = document.getElementById('modal-image');
+      const info = document.getElementById('modal-info');
+      
+      img.src = card['File Name'] || '';
+      img.alt = card.Name || '';
+      info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${count}</span>`;
+      
+      modal.classList.add('show');
+    }
+
+    function hideCardModal(){
+      document.getElementById('card-modal').classList.remove('show');
+    }
+
+    function showPairModal(commander, ship, commanderCount, shipCount, commanderRarityAbbr, shipRarityAbbr){
+      const modal = document.getElementById('pair-modal');
+      const content = document.getElementById('pair-modal-content');
+      const leftName = commander ? commander.Name || commander.ID : '';
+      const rightName = ship ? ship.Name || ship.ID : '';
+      const leftImg = commander ? (commander['File Name'] || '') : '';
+      const rightImg = ship ? (ship['File Name'] || '') : '';
+
+      content.innerHTML = `
+        <div style="display:flex;gap:28px;align-items:flex-start;justify-content:center;flex-wrap:wrap;">
+          <div style="text-align:center;max-width:420px;min-width:260px;">
+            <img src="${leftImg}" alt="${leftName}" style="max-width:420px;max-height:70vh;object-fit:contain;border-radius:8px;" onerror="this.style.display='none';">
+            <div style="margin-top:12px;color:#f8fafc;font-family:'Futura',sans-serif;">
+              <div style="font-size:1.2rem;">${leftName}${commanderRarityAbbr||''}</div>
+              <div style="font-size:0.95rem;color:#94a3b8;margin-top:6px;">Owned: x${commanderCount}</div>
+            </div>
+          </div>
+          <div style="text-align:center;max-width:420px;min-width:260px;">
+            <img src="${rightImg}" alt="${rightName}" style="max-width:420px;max-height:70vh;object-fit:contain;border-radius:8px;" onerror="this.style.display='none';">
+            <div style="margin-top:12px;color:#f8fafc;font-family:'Futura',sans-serif;">
+              <div style="font-size:1.2rem;">${rightName}${shipRarityAbbr||''}</div>
+              <div style="font-size:0.95rem;color:#94a3b8;margin-top:6px;">Owned: x${shipCount}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.classList.add('show');
+    }
+
+    function hidePairModal(){
+      document.getElementById('pair-modal').classList.remove('show');
+    }
+
+    // Close modal on background click
+    document.getElementById('card-modal').addEventListener('click', hideCardModal);
+
+    // Pair modal background click
+    document.getElementById('pair-modal').addEventListener('click', hidePairModal);
+    function showBadgeModal(achievementId){
+      const achievement = achievements.find(a => a.id === achievementId);
+      if(!achievement) return;
+      
+      const modal = document.getElementById('badge-modal');
+      const imageContainer = document.getElementById('badge-modal-image');
+      const title = document.getElementById('badge-modal-title');
+      
+      // Check if badge is an image or emoji
+      if(achievement.badge && (achievement.badge.endsWith('.png') || achievement.badge.endsWith('.jpg') || achievement.badge.endsWith('.jpeg') || achievement.badge.endsWith('.webp'))){
+        imageContainer.innerHTML = `<img src="${achievement.badge}" alt="${achievement.title}">`;
+      } else {
+        imageContainer.innerHTML = `<div class="badge-emoji">${achievement.badge || '🏆'}</div>`;
+      }
+      
+      title.textContent = achievement.title;
+      modal.classList.add('show');
+    }
+
+    function hideBadgeModal(){
+      document.getElementById('badge-modal').classList.remove('show');
+    }
+
+    // Close badge modal on background click
+    document.getElementById('badge-modal').addEventListener('click', hideBadgeModal);
+
+    // Make functions global
+    window.goBackToGrid = goBackToGrid;
+    window.showBadgeModal = showBadgeModal;
+
+    // Init
+    (async function(){
+      try {
+        achievements = await fetch('achievements.json?v=' + Date.now()).then(r=>r.json()).then(d => d.achievements);
+        collection = loadCollection();
+        unlockedAchievements = loadUnlockedAchievements();
+        
+        checkForNewUnlocks();
+        renderAchievements();
+      } catch (e) {
+        console.error('Achievements page error:', e);
+        document.getElementById('achievements-grid').innerHTML = 
+          '<p style="color: red; padding: 20px;">Error loading achievements: ' + e.message + '</p>';
+      }
+    })();
+  </script>
+</body>
+</html>
