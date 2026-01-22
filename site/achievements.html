@@ -843,7 +843,13 @@
       
       let topCards = null;
       let mainCards = achievementCards;
-      
+
+      // If the achievement defines a `top_row_cards` array, use those as the top row
+      if(achievement.top_row_cards && Array.isArray(achievement.top_row_cards) && achievement.top_row_cards.length > 0){
+        topCards = achievement.top_row_cards.map(id => achievementCards.find(c => c && c.ID === id)).filter(Boolean);
+        mainCards = achievementCards.filter(c => !achievement.top_row_cards.includes(c.ID));
+      }
+
       if(isSeniorStaff){
         topCards = [achievementCards[0]]; // Just the ship
         mainCards = achievementCards.slice(1);

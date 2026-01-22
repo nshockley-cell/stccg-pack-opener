@@ -1,0 +1,76 @@
+set_code,set_name,set_code,has_alt_images,has_foils,has_tribbles
+all_good_things,All Good Things,all_good_things,true,false,false
+alternate_universe,Alternate Universe,alternate_universe,false,false,false
+armada,Armada,armada,false,false,false
+away_team_pack,Away Team Pack,away_team_pack,false,false,false
+blaze_of_glory,Blaze of Glory,blaze_of_glory,false,false,false
+the_borg,The Borg,the_borg,true,true,false
+dominion,Dominion,dominion,false,false,false
+deep_space_nine,Deep Space 9,deep_space_nine,true,false,false
+enhanced_first_contact,Enhanced First Contact,enhanced_first_contact,false,false,false
+enterprise,Enterprise,enterprise,false,false,false
+enhanced_premiere,Enhanced Premiere,enhanced_premiere,false,false,false
+fajo_collection,Fajo Collection,fajo_collection,false,false,false
+first_anthology,First Anthology,first_anthology,false,false,false
+first_contact,First Contact,first_contact,false,false,false
+holodeck_adventures,Holodeck Adventures,holodeck_adventures,true,false,false
+introductory_2_player_game,Introductory Two-Player Game,introductory_2_player_game,false,false,false
+"mirror,_mirror","Mirror, Mirror","mirror,_mirror",true,false,false
+official_tournament_sealed_deck,Official Tournament Sealed Deck,official_tournament_sealed_deck,false,false,false
+premiere,Premiere,premiere,false,false,false
+q_continuum,Q-Continuum,q_continuum,false,false,false
+rules_of_acquisition,Rules of Acquisition,rules_of_acquisition,false,false,false
+second_anthology,Second Anthology,second_anthology,false,false,false
+starter_deck_2,Starter Deck II,starter_deck_2,false,false,false
+the_motion_pictures,The Motion Pictures,the_motion_pictures,true,false,false
+trouble_with_tribbles_sd,Trouble With Tribbles Starter Deck,trouble_with_tribbles_sd,false,false,true
+trouble_with_tribbles,Trouble With Tribbles,trouble_with_tribbles,false,false,false
+voyager,Voyager,voyager,true,false,false
+referee_reprints,Referee Reprints,referee_reprints,false,false,false
+identity_crisis,Identity Crisis,identity_crisis,true,false,false
+chain_of_command,Chain of Command,chain_of_command,false,false,false
+life_from_lifelessness,Life From Lifelessness,life_from_lifelessness,false,false,false
+homefront_1,Homefront 1,homefront_1,false,false,false
+straight_and_steady,Straight and Steady,straight_and_steady,true,false,false
+shades_of_gray,Shades of Gray,shades_of_gray,true,false,false
+homefront_2,Homefront 2,homefront_2,false,false,false
+resistance_is_futile,Resistance is Futile,resistance_is_futile,false,false,false
+the_next_generation,The Next Generation,the_next_generation,true,false,false
+homefront_3,Homefront 3,homefront_3,false,false,false
+engage,Engage,engage,true,false,false
+the_skys_the_limit,The Sky's the Limit,the_skys_the_limit,true,false,false
+homefront_4,Homefront 4,homefront_4,false,false,false
+emissary,Emissary,emissary,true,false,false
+homefront_5,Homefront 5,homefront_5,false,false,false
+warp_pack_emissary,Warp Pack: Emissary,warp_pack_emissary,false,false,false
+the_maquis,The Maquis,the_maquis,true,false,false
+20th_anniversary_collection,20th Anniversary Collection,20th_anniversary_collection,true,false,false
+the_gamma_quadrant,The Gamma Quadrant,the_gamma_quadrant,true,false,false
+homefront_6,Homefront 6,homefront_6,false,false,false
+crossover,Crossover,crossover,true,false,false
+through_the_looking_glass,Through the Looking Glass,through_the_looking_glass,false,false,false
+star_trek_50,Star Trek 50,star_trek_50,false,false,false
+the_terran_empire,The Terran Empire,the_terran_empire,true,false,false
+broken_bow,Broken Bow,broken_bow,false,false,false
+pre_warp_pack,Pre-Warp Pack,pre_warp_pack,false,false,false
+live_long_and_prosper,Live Long and Prosper,live_long_and_prosper,true,false,false
+warp_pack_holiday,Warp Pack: Holidy,warp_pack_holiday,true,false,false
+cold_front,Cold Front,cold_front,true,false,false
+metamorphosis,Metamorphosis,metamorphosis,true,false,false
+coming_of_age,Coming of Age,coming_of_age,true,false,false
+the_gift,The Gift,the_gift,true,false,false
+equilibrium,Equilibrium,equilibrium,true,false,false
+the_cage,The Cage,the_cage,false,false,false
+q_who,Q Who?,q_who,false,false,false
+the_neutral_zone,The Neutral Zone,the_neutral_zone,true,false,false
+a_private_little_war,A Private Little War,a_private_little_war,true,false,false
+dogs_of_war,Dogs of War,dogs_of_war,true,false,false
+the_trial_never_ended,The Trial Never Ended,the_trial_never_ended,false,false,false
+second_star_to_the_right,Second Star to the Right,second_star_to_the_right,false,false,false
+paradise_lost,Paradise Lost,paradise_lost,true,false,false
+nemesis,Nemesis,nemesis,true,false,false
+ships_of_the_line,Ships of the Line,ships_of_the_line,false,false,false
+four_lights,Four Lights,four_lights,true,false,false
+lifesigns,Lifesigns,lifesigns,true,false,false
+twilight,Twilight,twilight,true,false,false
+dramatis_personae,Dramatis Personae,dramatis_personae,true,false,false

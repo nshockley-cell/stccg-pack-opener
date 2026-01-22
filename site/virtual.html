@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>STCCG Virtual Pack Opener</title>
+  <link rel="stylesheet" href="style.css?v=10">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <header>
+    <h1>Virtual Pack Opener</h1>
+    <p>Click a virtual pack to open it!</p>
+  </header>
+
+  <nav class="topnav">
+    <a href="collection.html?v=13">My Collection</a>
+    <a href="index.html">Physical Pack Opener</a>
+    <a href="achievements.html">Achievements</a>
+    <button id="clear" class="collect-btn" style="margin-left:auto;margin-right:12px">Clear All Cards</button>
+  </nav>
+
+  <section id="pack-selection" class="pack-grid">
+    <!-- Pack tiles will be dynamically inserted here -->
+  </section>
+
+  <main>
+    <div id="pack-container" class="packs"></div>
+  </main>
+
+  <script>
+    // Signal app.js to only show virtual sets; load the list from virtual_sets.json
+    window.VIRTUAL_ONLY = true;
+    window.VIRTUAL_SHORT_CODES = (function(){
+      try{
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET','virtual_sets.json', false); // synchronous fetch to ensure app.js sees the data
+        xhr.send(null);
+        if(xhr.status === 200) return JSON.parse(xhr.responseText);
+      }catch(e){ }
+      return [];
+    })();
+  </script>
+  <script src="app.js?v=26"></script>
+</body>
+</html>

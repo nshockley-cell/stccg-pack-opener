@@ -1,0 +1,28 @@
+set_code,set_name,set_code,has_alt_images,has_foils,has_tribbles
+AGT,All Good Things,all_good_things,true,false,false
+ALT,Alternate Universe,alternate_universe,false,false,false
+ARM,Armada,armada,false,false,false
+ATP,Away Team Pack,away_team_pack,false,false,false
+BOG,Blaze of Glory,blaze_of_glory,false,false,false
+BOR,The Borg,the_borg,true,true,false
+DOM,Dominion,dominion,false,false,false
+DS9,Deep Space 9,deep_space_nine,true,false,false
+EFC,Enhanced First Contact,enhanced_first_contact,false,false,false
+ENT,Enterprise,enterprise,false,false,false
+EPR,Enhanced Premiere,enhanced_premiere,false,false,false
+FAJ,Fajo Collection,fajo_collection,false,false,false
+FAN,First Anthology,first_anthology,false,false,false
+FCO,First Contact,first_contact,false,false,false
+HAD,Holodeck Adventures,holodeck_adventures,true,false,false
+ITG,Introductory Two-Player Game,introductory_2_player_game,false,false,false
+MIR,"Mirror, Mirror","mirror,_mirror",true,false,false
+OTD,Official Tournament Sealed Deck,official_tournament_sealed_deck,false,false,false
+PRE,Premiere,premiere,false,false,false
+QCM,Q-Continuum,q_continuum,false,false,false
+ROA,Rules of Acquisition,rules_of_acquisition,false,false,false
+SAN,Second Anthology,second_anthology,false,false,false
+SD2,Starter Deck II,starter_deck_2,false,false,false
+TMP,The Motion Pictures,the_motion_pictures,true,false,false
+TSD,Trouble With Tribbles Starter Deck,trouble_with_tribbles_sd,false,false,true
+TWT,Trouble With Tribbles,trouble_with_tribbles,false,false,false
+VOY,Voyager,voyager,true,false,false

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>STCCG Pack Opener</title>
+  <link rel="stylesheet" href="style.css?v=10">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+  <header>
+    <h1>Decipher Pack Opener</h1>
+    <p>Click a Decipher pack to open it!</p>
+  </header>
+
+  <nav class="topnav">
+    <a href="collection.html?v=13">My Collection</a>
+    <a href="virtual.html">Virtual Pack Opener</a>
+    <a href="achievements.html">Achievements</a>
+    <button id="clear" class="collect-btn" style="margin-left:auto;margin-right:12px">Clear All Cards</button>
+    <button id="mark-enterprise-d" class="collect-btn" title="Add Enterprise-D senior staff to your collection">Mark Enterprise-D Complete</button>
+  </nav>
+
+  <section id="pack-selection" class="pack-grid">
+    <!-- Pack tiles will be dynamically inserted here -->
+  </section>
+
+  <main>
+    <div id="pack-container" class="packs"></div>
+  </main>
+
+  <script>
+    // Signal app.js to only show Decipher sets (load from decipher_sets.json)
+    window.PHYSICAL_ONLY = true;
+    window.PHYSICAL_SHORT_CODES = [];
+    fetch('decipher_sets.json').then(r=>r.json()).then(arr=>{ window.PHYSICAL_SHORT_CODES = arr; }).catch(()=>{ window.PHYSICAL_SHORT_CODES = []; });
+  </script>
+  <script src="app.js?v=22"></script>
+</body>
+</html>

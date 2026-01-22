@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>My Collection</title>
+  <link rel="stylesheet" href="style.css?v=13">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    @font-face {
+      font-family: 'Futura';
+      src: url('fonts/FuturaLTCondensedLight-Italic.ttf?v=2') format('truetype');
+      font-display: block;
+    }
+    .set-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 12px; }
+    .set-tile { 
+      border-radius: 8px; 
+      cursor: pointer; 
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 350px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .set-tile.completed::after {
+      content: 'Completed';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-22deg);
+      padding: 6px 10px;
+      background: rgba(14,165,233,0.65);
+      color: #fff;
+      font-family: 'Futura', sans-serif;
+      font-size: 1.035rem;
+      border-radius: 6px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .stats-panel {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px auto;
+      max-width: 600px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .stats-panel h3 {
+      margin: 0 0 16px 0;
+      color: #f1f5f9;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    .stats-numbers {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+    }
+    .stat {
+      text-align: center;
+      flex: 1;
+    }
+    .stat-value {
+      font-size: 2rem;
+      color: #0ea5e9;
+      margin-bottom: 4px;
+      font-family: 'Futura', sans-serif;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .set-tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+    }
+    .set-tile:hover { 
+      transform: translateY(-6px); 
+      box-shadow: 0 12px 24px rgba(0,0,0,0.5); 
+    }
+    .set-tile-fallback {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    .set-tile-info {
+      position: relative;
+      z-index: 1;
+      padding: 16px;
+      text-align: center;
+      width: 100%;
+      font-family: 'Futura', sans-serif;
+    }
+    .set-tile-code { font-size: 1.5rem; color: #fff; font-family: 'Futura', sans-serif; }
+    .set-tile-name { font-size: 1rem; color: rgba(255,255,255,0.8); margin-top: 4px; font-family: 'Futura', sans-serif; }
+    .set-tile-count { font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-top: 4px; font-family: 'Futura', sans-serif; }
+
+    .collection-detail { padding: 12px; }
+    .collection-detail h2 { margin: 0 0 12px 0; color: #fff; font-family: 'Futura', sans-serif; }
+    .cards-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .collection-card { 
+      background: #0b1a2a; 
+      border-radius: 6px; 
+      padding: 8px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 150px;
+      flex-shrink: 0;
+    }
+    .collection-card:hover { background: #0f2233; }
+    .collection-card.collected { border: 2px solid #0ea5e9; }
+    .collection-card.uncollected { 
+      opacity: 0.4;
+      filter: grayscale(0.5);
+    }
+    .collection-card.uncollected:hover {
+      opacity: 0.6;
+    }
+    .collection-card img { width: 100%; height: 200px; object-fit: contain; border-radius: 4px; margin-bottom: 6px; }
+    .collection-card .card-info { font-size: 1rem; color: #f8fafc; line-height: 1.2; font-family: 'Futura', sans-serif; }
+    .collection-card .checkbox-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+      margin-top: 6px; 
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-family: 'Futura', sans-serif;
+    }
+    .back-button { margin-bottom: 12px; }
+    .back-button button { 
+      padding: 8px 16px; 
+      background: linear-gradient(135deg, #0ea5e9, #2563eb); 
+      color: #fff; 
+      border: 0; 
+      border-radius: 6px; 
+      cursor: pointer;
+      font-family: 'Futura', sans-serif;
+      transition: all 0.2s ease;
+    }
+    .back-button button:hover { 
+      background: linear-gradient(135deg, #0284c7, #1d4ed8);
+      transform: translateY(-1px);
+    }
+
+    /* Completion toast */
+    .toast {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #07203a;
+      color: #f8fafc;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      border: 1px solid rgba(14,165,233,0.4);
+      font-family: 'Futura', sans-serif;
+      z-index: 2000;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Card modal */
+    .card-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .card-modal.show {
+      display: flex;
+    }
+    .card-modal-content {
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+    }
+    .card-modal-content img {
+      max-width: 600px;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .card-modal-info {
+      margin-top: 16px;
+      color: #f8fafc;
+      font-family: 'Futura', sans-serif;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Collection</h1>
+    <p>Click a set to view your collected cards.</p>
+  </header>
+
+  <div id="stats-panel" class="stats-panel">
+    <h3>Collection Progress</h3>
+    <div class="stats-numbers">
+      <div class="stat">
+        <div class="stat-value" id="collected-count">0</div>
+        <div class="stat-label">Unique Cards Collected</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="total-count">0</div>
+        <div class="stat-label">Total Cards Collected</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="total-cards">0</div>
+        <div class="stat-label">Total Cards in Set</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="completion-percent">0%</div>
+        <div class="stat-label">Complete</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="topnav">
+    <a href="index.html">Physical Pack Opener</a>
+    <a href="virtual.html">Virtual Pack Opener</a>
+    <a href="achievements.html">Achievements</a>
+    <button id="export-btn" class="collect-btn" style="margin-left:auto;margin-right:8px">Export Collection</button>
+    <button id="clear-collection-btn" class="collect-btn" style="margin-right:12px;background:#ef4444">Clear Collection</button>
+  </nav>
+
+  <main id="main-view">
+    <div id="tiles-view" class="set-tiles" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 12px;"></div>
+    <div id="detail-view" style="display:none;"></div>
+  </main>
+
+  <div id="card-modal" class="card-modal">
+    <div class="card-modal-content" onclick="event.stopPropagation()">
+      <img id="modal-image" src="" alt="">
+      <div id="modal-info" class="card-modal-info"></div>
+    </div>
+  </div>
+
+  <script>
+    let bySet = {};
+    let col = {};
+    let setKeys = [];
+    let setsData = {};  // Map set codes to pack art and names
+
+    function loadCompletedSets(){
+      try { return JSON.parse(localStorage.getItem('stccg_completed_sets')||'[]'); } catch(e){ return []; }
+    }
+    function saveCompletedSets(list){
+      localStorage.setItem('stccg_completed_sets', JSON.stringify(list));
+    }
+
+    function showToast(message){
+      let toast = document.getElementById('completion-toast');
+      if(!toast){
+        toast = document.createElement('div');
+        toast.id = 'completion-toast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 2500);
+    }
+
+    const tilesView = document.getElementById('tiles-view');
+    const detailView = document.getElementById('detail-view');
+
+    // Try to set pack art from sets.json or by auto-detecting common filenames
+    function tryPackArt(setCode, tile){
+      const setInfo = setsData[setCode];
+      const explicit = setInfo && setInfo.pack_art ? setInfo.pack_art : null;
+      const cacheBust = '?v=15';
+      const candidates = explicit ? [explicit] : [
+        `pack-art/${setCode}.png${cacheBust}`,
+        `pack-art/${setCode}.jpg${cacheBust}`,
+        `pack-art/${setCode}.jpeg${cacheBust}`,
+        `pack-art/${setCode}.webp${cacheBust}`
+      ];
+
+      function attempt(i){
+        if(i >= candidates.length) return; // keep fallback styling
+        const src = candidates[i];
+        const img = new Image();
+        img.onload = () => {
+          tile.style.backgroundImage = `url('${src}')`;
+          tile.classList.remove('set-tile-fallback');
+        };
+        img.onerror = () => attempt(i+1);
+        img.src = src;
+      }
+
+      // start with fallback, then try to resolve an image
+      tile.classList.add('set-tile-fallback');
+      attempt(0);
+    }
+
+    function renderSetTiles(){
+      tilesView.innerHTML = '';
+      const completedStored = loadCompletedSets();
+      const newlyCompleted = [];
+      
+      // Calculate total collection stats
+      let totalCollected = 0;
+      let totalCards = 0;
+      let totalWithDuplicates = 0;
+      
+      setKeys.forEach(setCode=>{
+        const tile = document.createElement('div'); 
+        tile.className = 'set-tile';
+        
+        // Resolve pack art (explicit from sets.json or auto-detected by short code)
+        tryPackArt(setCode, tile);
+        
+        // Count collected cards in this set
+        const collectedCount = bySet[setCode].filter(c=> col[c.ID] && col[c.ID].collected).length;
+        const totalCount = bySet[setCode].length;
+        
+        // Count duplicates
+        const duplicatesCount = bySet[setCode].reduce((sum, c) => {
+          return sum + (col[c.ID] ? (col[c.ID].count || 0) : 0);
+        }, 0);
+        
+        // Add to overall totals
+        totalCollected += collectedCount;
+        totalCards += totalCount;
+        totalWithDuplicates += duplicatesCount;
+
+        const isCompleted = totalCount > 0 && collectedCount === totalCount;
+        if(isCompleted){
+          tile.classList.add('completed');
+          if(!completedStored.includes(setCode)) newlyCompleted.push(setCode);
+        }
+        
+        const info = document.createElement('div');
+        info.className = 'set-tile-info';
+        info.innerHTML = `
+          <div class="set-tile-name">${bySet[setCode][0]['Set Name']||setCode}</div>
+          <div class="set-tile-count">${collectedCount}/${totalCount}</div>
+        `;
+        tile.appendChild(info);
+        tile.addEventListener('click', ()=> renderSetDetail(setCode));
+        tilesView.appendChild(tile);
+      });
+      tilesView.style.display = 'grid';
+      detailView.style.display = 'none';
+
+      if(newlyCompleted.length){
+        saveCompletedSets([...new Set([...completedStored, ...newlyCompleted])]);
+        showToast(`Set completed: ${newlyCompleted.map(c=> bySet[c]?.[0]?.['Set Name']||c).join(', ')}`);
+      }
+      
+      // Update stats panel
+      document.getElementById('collected-count').textContent = totalCollected;
+      document.getElementById('total-count').textContent = totalWithDuplicates.toLocaleString();
+      document.getElementById('total-cards').textContent = totalCards;
+      const percentage = totalCards > 0 ? Math.round((totalCollected / totalCards) * 100) : 0;
+      document.getElementById('completion-percent').textContent = percentage + '%';
+    }
+
+    function renderSetDetail(setCode){
+      // Calculate rarity counts
+      const rarityStats = {};
+      bySet[setCode].forEach(card => {
+        const rarity = card.Rarity || card['Rarity'] || 'Unknown';
+        if(!rarityStats[rarity]) {
+          rarityStats[rarity] = { collected: 0, total: 0 };
+        }
+        rarityStats[rarity].total++;
+        if(col[card.ID] && col[card.ID].collected) {
+          rarityStats[rarity].collected++;
+        }
+      });
+      
+      // Build rarity display string
+      const rarityOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil'];
+      const rarityDisplay = rarityOrder
+        .filter(r => rarityStats[r])
+        .map(r => `${r} ${rarityStats[r].collected}/${rarityStats[r].total}`)
+        .join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+      
+      // Get pack opens for this set
+      let packStats = {};
+      try { packStats = JSON.parse(localStorage.getItem('stccg_pack_stats')||'{}'); } catch(e){}
+      const packsOpened = packStats[setCode] || 0;
+      console.log('Pack stats for', setCode, ':', packsOpened, 'Full stats:', packStats);
+      const packsDisplay = packsOpened > 0 ? `<div style="font-family: 'Futura', sans-serif; font-size: 0.95rem; color: #64748b; margin-bottom: 8px; text-align: center;">📦 ${packsOpened} pack${packsOpened !== 1 ? 's' : ''} opened</div>` : '';
+      
+      detailView.innerHTML = `
+        <div class="back-button"><button onclick="goBack()">← Back to Sets</button></div>
+        <div class="collection-detail">
+          <h2>${bySet[setCode][0]['Set Name']||setCode}</h2>
+          ${packsDisplay}
+          <div style="font-family: 'Futura', sans-serif; font-size: 1rem; color: #94a3b8; margin-bottom: 16px; text-align: center;">
+            ${rarityDisplay}
+          </div>
+          <div class="cards-grid" id="cards-grid"></div>
+        </div>
+      `;
+      
+      const grid = document.getElementById('cards-grid');
+      bySet[setCode].forEach(card=>{
+        const cardEl = document.createElement('div');
+        const isCollected = col[card.ID] && col[card.ID].collected;
+        cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
+        
+        const img = document.createElement('img');
+        img.src = card['File Name']||'';
+        img.alt = card.Name||'';
+        img.onerror = function(){ this.style.display='none'; };
+        
+        const info = document.createElement('div');
+        info.className = 'card-info';
+        const count = (col[card.ID] && col[card.ID].count) || 0;
+        const checkmark = isCollected ? '✓' : '';
+        const rarity = card.Rarity || card['Rarity'] || '';
+        const rarityAbbr = rarity ? ` (${rarity.charAt(0).toUpperCase()})` : '';
+        info.innerHTML = `${checkmark} ${card.Name||''}${rarityAbbr}<br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
+        
+        cardEl.appendChild(img);
+        cardEl.appendChild(info);
+        cardEl.addEventListener('click', () => showCardModal(card, count, rarityAbbr));
+        grid.appendChild(cardEl);
+      });
+      
+      tilesView.style.display = 'none';
+      detailView.style.display = 'block';
+    }
+
+    function goBack(){
+      renderSetTiles();
+    }
+
+    function showCardModal(card, count, rarityAbbr){
+      const modal = document.getElementById('card-modal');
+      const img = document.getElementById('modal-image');
+      const info = document.getElementById('modal-info');
+      
+      img.src = card['File Name'] || '';
+      img.alt = card.Name || '';
+      info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${count}</span>`;
+      
+      modal.classList.add('show');
+    }
+
+    function hideCardModal(){
+      document.getElementById('card-modal').classList.remove('show');
+    }
+
+    // Close modal on background click
+    document.getElementById('card-modal').addEventListener('click', hideCardModal);
+
+    function loadCollection(){
+      try{ return JSON.parse(localStorage.getItem('stccg_collection')||'{}'); }catch(e){return{}}}
+
+    // Init
+    (async function(){
+      try {
+        const cards = await fetch('cards.json?v=' + Date.now()).then(r=>r.json());
+        const sets = await fetch('sets.json?v=' + Date.now()).then(r=>r.json());
+        
+        bySet = {};
+        cards.forEach(c=>{
+          const set = (c['Set Code']||'').trim() || (c['Set Name']||'').trim();
+          bySet[set] = bySet[set]||[];
+          bySet[set].push(c);
+        });
+
+        // Map sets.json data by short code (ALT, AGT, etc.) for easy lookup
+        sets.forEach(s=>{
+          if(s.short_code){
+            setsData[s.short_code] = s;
+          }
+        });
+
+        col = loadCollection();
+        const setOrder = ['PRE', 'ALT', 'QCM', 'ITG', 'FAN', 'FCO', 'FAJ', 'ATP', 'OTD', 'DS9', 'STD', 'EFC', 'DOM', 'BOG', 'ROA', 'ARM', 'SAN', 'TWT', 'TSD', 'EPR', 'MIR', 'VOY', 'BOR', 'HAD', 'TMP', 'AGT', 'ENT'];
+        setKeys = Object.keys(bySet).sort((a,b)=>{
+          const aIdx = setOrder.indexOf(a);
+          const bIdx = setOrder.indexOf(b);
+          if(aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+          if(aIdx !== -1) return -1;
+          if(bIdx !== -1) return 1;
+          return a.localeCompare(b);
+        });
+
+        // Export button
+        document.getElementById('export-btn').addEventListener('click', ()=>{
+          const data = localStorage.getItem('stccg_collection')||'{}';
+          const blob = new Blob([data],{type:'application/json'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href=url; a.download='stccg_collection.json'; a.click();
+          URL.revokeObjectURL(url);
+        });
+
+        // Clear Collection button with confirmation
+        document.getElementById('clear-collection-btn').addEventListener('click', ()=>{
+          if(confirm('Are you sure you want to clear your entire collection? This cannot be undone.')){
+            localStorage.removeItem('stccg_collection');
+            location.reload();
+          }
+        });
+
+        // Initial render
+        renderSetTiles();
+      } catch (e) {
+        console.error('Collection page error:', e);
+        document.getElementById('main-view').innerHTML = '<p style="color: red;">Error loading collection: ' + e.message + '</p>';
+      }
+    })();
+  </script>
+</body>
+</html>

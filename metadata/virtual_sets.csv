@@ -1,0 +1,49 @@
+set_code,set_name,set_code,has_alt_images,has_foils,has_tribbles
+RFR,Referee Reprints,referee_reprints,false,false,false
+IDC,Identity Crisis,identity_crisis,true,false,false
+COC,Chain of Command,chain_of_command,false,false,false
+LFL,Life From Lifelessness,life_from_lifelessness,false,false,false
+HF1,Homefront 1,homefront_1,false,false,false
+SAS,Straight and Steady,straight_and_steady,true,false,false
+SOG,Shades of Gray,shades_of_gray,true,false,false
+HF2,Homefront 2,homefront_2,false,false,false
+RIF,Resistance is Futile,resistance_is_futile,false,false,false
+TNG,The Next Generation,the_next_generation,true,false,false
+HF3,Homefront 3,homefront_3,false,false,false
+ENG,Engage,engage,true,false,false
+STL,The Sky's the Limit,the_skys_the_limit,true,false,false
+HF4,Homefront 4,homefront_4,false,false,false
+EMS,Emissary,emissary,true,false,false
+HF5,Homefront 5,homefront_5,false,false,false
+WPE,Warp Pack: Emissary,warp_pack_emissary,false,false,false
+MAQ,The Maquis,the_maquis,true,false,false
+TAC,20th Anniversary Collection,20th_anniversary_collection,true,false,false
+TGC,The Gamma Quadrant,the_gamma_quadrant,true,false,false
+HF6,Homefront 6,homefront_6,false,false,false
+CSO,Crossover,crossover,true,false,false
+TLG,Through the Looking Glass,through_the_looking_glass,false,false,false
+T50,Star Trek 50,star_trek_50,false,false,false
+TTE,The Terran Empire,the_terran_empire,true,false,false
+BOW,Broken Bow,broken_bow,false,false,false
+PWP,Pre-Warp Pack,pre_warp_pack,false,false,false
+LLP,Live Long and Prosper,live_long_and_prosper,true,false,false
+WPH,Warp Pack: Holidy,warp_pack_holiday,true,false,false
+COF,Cold Front,cold_front,true,false,false
+MET,Metamorphosis,metamorphosis,true,false,false
+COA,Coming of Age,coming_of_age,true,false,false
+GIF,The Gift,the_gift,true,false,false
+EQU,Equilibrium,equilibrium,true,false,false
+CAG,The Cage,the_cage,false,false,false
+WHO,Q Who?,q_who,false,false,false
+TNZ,The Neutral Zone,the_neutral_zone,true,false,false
+PLW,A Private Little War,a_private_little_war,true,false,false
+DOW,Dogs of War,dogs_of_war,true,false,false
+TNE,The Trial Never Ended,the_trial_never_ended,false,false,false
+SSR,Second Star to the Right,second_star_to_the_right,false,false,false
+PAR,Paradise Lost,paradise_lost,true,false,false
+NEM,Nemesis,nemesis,true,false,false
+SOL,Ships of the Line,ships_of_the_line,false,false,false
+FOL,Four Lights,four_lights,true,false,false
+LFS,Lifesigns,lifesigns,true,false,false
+TWI,Twilight,twilight,true,false,false
+DRP,Dramatis Personae,dramatis_personae,true,false,false

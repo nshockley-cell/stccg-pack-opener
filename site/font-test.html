@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Font Test</title>
+  <style>
+    @font-face {
+      font-family: 'TestFutura';
+      src: url('fonts/FuturaLTCondensedLight-Italic.ttf?v=1') format('truetype');
+      font-weight: 300;
+      font-style: italic;
+      font-display: block;
+    }
+    body {
+      background: #0f1720;
+      color: #f8fafc;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .futura {
+      font-family: 'TestFutura', Arial, sans-serif;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    .system {
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Font Test Page</h1>
+  <p class="system">This is Arial (system font)</p>
+  <p class="futura">This is Futura (should look different - italic)</p>
+  <p class="futura">Pack Opener Test - Futura Font</p>
+</body>
+</html>
