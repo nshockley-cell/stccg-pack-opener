@@ -1,7 +1,9 @@
 // Pack opener app
 (async function(){
-  const cards = await fetch('cards.json').then(r=>r.json());
-  const sets = await fetch('sets.json').then(r=>r.json());
+  // Add simple cache-busting to ensure Netlify serves latest JSON
+  const VERSION = '23';
+  const cards = await fetch(`cards.json?v=${VERSION}`).then(r=>r.json());
+  const sets = await fetch(`sets.json?v=${VERSION}`).then(r=>r.json());
 
   // Sets to combine into "Where No One Has Gone Before"
   const promoSetCodes = ['AGT', 'ARM', 'ATP', 'EFC', 'EPR', 'ENT', 'FAJ', 'FAN', 'ITG', 'OTD', 'SAN', 'STD'];
