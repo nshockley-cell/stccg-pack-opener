@@ -138,7 +138,7 @@
     tile.addEventListener('click', ()=>{
       const pack = generatePackForSet(s.code);
       incrementPackOpens(s.code);
-      renderPacks([pack], s.code);
+      renderPacks([pack], s.code, s.name);
       // Scroll to cards
       document.getElementById('pack-container').scrollIntoView({behavior:'smooth'});
     });
@@ -588,7 +588,7 @@
     return commonsArr.concat(uncommonsArr, rareArr, extrasArr);
   }
 
-  function renderPacks(packs, setCode){
+  function renderPacks(packs, setCode, setName){
     const container = document.getElementById('pack-container');
     // Clear previous packs
     container.innerHTML = '';
@@ -758,6 +758,33 @@
       packEl.appendChild(grid);
       container.appendChild(packEl);
     });
+    
+    // Add "Open Another" and "Back to Top" buttons at the bottom
+    if(setCode && setName) {
+      const buttonContainer = document.createElement('div');
+      buttonContainer.className = 'pack-actions';
+      
+      const openAnotherBtn = document.createElement('button');
+      openAnotherBtn.className = 'pack-action-btn';
+      openAnotherBtn.textContent = `Open Another ${setName}`;
+      openAnotherBtn.addEventListener('click', () => {
+        const newPack = generatePackForSet(setCode);
+        incrementPackOpens(setCode);
+        renderPacks([newPack], setCode, setName);
+        document.getElementById('pack-container').scrollIntoView({behavior:'smooth'});
+      });
+      
+      const backToTopBtn = document.createElement('button');
+      backToTopBtn.className = 'pack-action-btn';
+      backToTopBtn.textContent = 'Back to Top';
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      });
+      
+      buttonContainer.appendChild(openAnotherBtn);
+      buttonContainer.appendChild(backToTopBtn);
+      container.appendChild(buttonContainer);
+    }
   }
 
   // Recent pulls tracking (to avoid duplicates like real pack collation)
