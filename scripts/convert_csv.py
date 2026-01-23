@@ -90,7 +90,7 @@ def main():
 
     print(f'Filled File Name for {count_filled} cards from images.csv')
 
-    out_dir = Path('site')
+    out_dir = Path('docs')
     out_dir.mkdir(parents=True, exist_ok=True)
 
     cards_out = out_dir / 'cards.json'

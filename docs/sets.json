@@ -4,674 +4,524 @@
     "set_name": "All Good Things",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "alternate_universe",
     "set_name": "Alternate Universe",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "armada",
     "set_name": "Armada",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "away_team_pack",
     "set_name": "Away Team Pack",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "blaze_of_glory",
     "set_name": "Blaze of Glory",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_borg",
     "set_name": "The Borg",
     "has_alt_images": "true",
     "has_foils": "true",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "dominion",
     "set_name": "Dominion",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "deep_space_nine",
     "set_name": "Deep Space 9",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "enhanced_first_contact",
     "set_name": "Enhanced First Contact",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "enterprise",
     "set_name": "Enterprise",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "enhanced_premiere",
     "set_name": "Enhanced Premiere",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "fajo_collection",
     "set_name": "Fajo Collection",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "first_anthology",
     "set_name": "First Anthology",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "first_contact",
     "set_name": "First Contact",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "holodeck_adventures",
     "set_name": "Holodeck Adventures",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "introductory_2_player_game",
     "set_name": "Introductory Two-Player Game",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "mirror,_mirror",
     "set_name": "Mirror, Mirror",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "official_tournament_sealed_deck",
     "set_name": "Official Tournament Sealed Deck",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "premiere",
     "set_name": "Premiere",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "q_continuum",
     "set_name": "Q-Continuum",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "rules_of_acquisition",
     "set_name": "Rules of Acquisition",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "second_anthology",
     "set_name": "Second Anthology",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "starter_deck_2",
     "set_name": "Starter Deck II",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_motion_pictures",
     "set_name": "The Motion Pictures",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "trouble_with_tribbles_sd",
     "set_name": "Trouble With Tribbles Starter Deck",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "true",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "true"
   },
   {
     "set_code": "trouble_with_tribbles",
     "set_name": "Trouble With Tribbles",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "voyager",
     "set_name": "Voyager",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "referee_reprints",
     "set_name": "Referee Reprints",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "identity_crisis",
     "set_name": "Identity Crisis",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "chain_of_command",
     "set_name": "Chain of Command",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "life_from_lifelessness",
     "set_name": "Life From Lifelessness",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "homefront_1",
     "set_name": "Homefront 1",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "straight_and_steady",
     "set_name": "Straight and Steady",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "shades_of_gray",
     "set_name": "Shades of Gray",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "homefront_2",
     "set_name": "Homefront 2",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "resistance_is_futile",
     "set_name": "Resistance is Futile",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_next_generation",
     "set_name": "The Next Generation",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "homefront_3",
     "set_name": "Homefront 3",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "engage",
     "set_name": "Engage",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_skys_the_limit",
     "set_name": "The Sky's the Limit",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "homefront_4",
     "set_name": "Homefront 4",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "emissary",
     "set_name": "Emissary",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "homefront_5",
     "set_name": "Homefront 5",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "warp_pack_emissary",
     "set_name": "Warp Pack: Emissary",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_maquis",
     "set_name": "The Maquis",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "20th_anniversary_collection",
     "set_name": "20th Anniversary Collection",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_gamma_quadrant",
     "set_name": "The Gamma Quadrant",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "homefront_6",
     "set_name": "Homefront 6",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "crossover",
     "set_name": "Crossover",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "through_the_looking_glass",
     "set_name": "Through the Looking Glass",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "star_trek_50",
     "set_name": "Star Trek 50",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_terran_empire",
     "set_name": "The Terran Empire",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "broken_bow",
     "set_name": "Broken Bow",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "pre_warp_pack",
     "set_name": "Pre-Warp Pack",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "live_long_and_prosper",
     "set_name": "Live Long and Prosper",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "warp_pack_holiday",
     "set_name": "Warp Pack: Holidy",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "cold_front",
     "set_name": "Cold Front",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "metamorphosis",
     "set_name": "Metamorphosis",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "coming_of_age",
     "set_name": "Coming of Age",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_gift",
     "set_name": "The Gift",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "equilibrium",
     "set_name": "Equilibrium",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_cage",
     "set_name": "The Cage",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "q_who",
     "set_name": "Q Who?",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_neutral_zone",
     "set_name": "The Neutral Zone",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "a_private_little_war",
     "set_name": "A Private Little War",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "dogs_of_war",
     "set_name": "Dogs of War",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "the_trial_never_ended",
     "set_name": "The Trial Never Ended",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "second_star_to_the_right",
     "set_name": "Second Star to the Right",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "paradise_lost",
     "set_name": "Paradise Lost",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "nemesis",
     "set_name": "Nemesis",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "ships_of_the_line",
     "set_name": "Ships of the Line",
     "has_alt_images": "false",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "four_lights",
     "set_name": "Four Lights",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "lifesigns",
     "set_name": "Lifesigns",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "twilight",
     "set_name": "Twilight",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   },
   {
     "set_code": "dramatis_personae",
     "set_name": "Dramatis Personae",
     "has_alt_images": "true",
     "has_foils": "false",
-    "has_tribbles": "false",
-    "short_code": "",
-    "pack_art": ""
+    "has_tribbles": "false"
   }
 ]

@@ -1,6 +1,8 @@
 [build]
   # Publish directory (where your HTML/CSS/JS files are)
   publish = "docs"
+  # Functions directory (empty, satisfies Netlify UI setting)
+  functions = "netlify/functions"
   
   # No build command needed for static site
   command = ""
@@ -10,7 +12,6 @@
   to = "/index.html"
   status = 200
   force = false
-  conditions = {Role = ["admin"]}
 
 # Set custom headers for caching images
 [[headers]]
