@@ -393,26 +393,95 @@
       document.getElementById('completion-percent').textContent = percentage + '%';
     }
 
+    function getRarityAbbr(raw){
+      const r = String(raw || '').trim();
+      if(!r) return '';
+      const up = r.toUpperCase();
+      if(['CV','UV','RV','R+V','URV'].includes(up)) return up;
+      if(up.includes('URV')) return 'URV';
+      if(up.includes('R+V') || up.includes('RARE PLUS') || up.includes('RARE+')) return 'R+V';
+      if(up.includes('RARE') && up.includes('VIRTUAL')) return 'RV';
+      if(up.includes('UNCOMMON') && up.includes('VIRTUAL')) return 'UV';
+      if(up.includes('COMMON') && up.includes('VIRTUAL')) return 'CV';
+      if(up.includes('ULTRA')) return 'UR';
+      if(up.includes('RARE') && up.includes('PLUS')) return 'R+';
+      if(up.includes('RARE')) return 'R';
+      if(up.includes('UNCOMMON')) return 'U';
+      if(up.includes('COMMON')) return 'C';
+      if(up.includes('FOIL')) return 'F';
+      if(up.includes('PROMO')) return 'P';
+      return up.charAt(0);
+    }
+
     function renderSetDetail(setCode){
       // Calculate rarity counts
       const rarityStats = {};
+      const virtualStats = {};
+      let hasVirtualRarity = false;
+
+      function normalizeRarity(raw){
+        return String(raw || '').trim().toUpperCase();
+      }
+
+      function getVirtualRarityCode(raw){
+        const r = normalizeRarity(raw);
+        if(!r) return '';
+        if(r.includes('URV') || r.includes('ULTRA') && r.includes('VIRTUAL')) return 'URV';
+        if(r.includes('R+V') || (r.includes('RARE') && r.includes('PLUS') && r.includes('VIRTUAL'))) return 'R+V';
+        if(r.includes('RV') || (r.includes('RARE') && r.includes('VIRTUAL'))) return 'RV';
+        if(r.includes('UV') || (r.includes('UNCOMMON') && r.includes('VIRTUAL'))) return 'UV';
+        if(r.includes('CV') || (r.includes('COMMON') && r.includes('VIRTUAL'))) return 'CV';
+        return '';
+      }
+
+      function getPhysicalRarityLabel(raw){
+        const r = normalizeRarity(raw);
+        if(r.includes('FOIL')) return 'Foil';
+        if(r.includes('ULTRA')) return 'Ultra Rare';
+        if(r.includes('RARE') && r.includes('PLUS')) return 'Rare Plus';
+        if(r.includes('RARE')) return 'Rare';
+        if(r.includes('UNCOMMON')) return 'Uncommon';
+        if(r.includes('COMMON')) return 'Common';
+        return 'Unknown';
+      }
+
       bySet[setCode].forEach(card => {
-        const rarity = card.Rarity || card['Rarity'] || 'Unknown';
-        if(!rarityStats[rarity]) {
-          rarityStats[rarity] = { collected: 0, total: 0 };
+        const rarityRaw = card.Rarity || card['Rarity'] || 'Unknown';
+        const virtualCode = getVirtualRarityCode(rarityRaw);
+        if(virtualCode){
+          hasVirtualRarity = true;
+          if(!virtualStats[virtualCode]) {
+            virtualStats[virtualCode] = { collected: 0, total: 0 };
+          }
+          virtualStats[virtualCode].total++;
+          if(col[card.ID] && col[card.ID].collected) {
+            virtualStats[virtualCode].collected++;
+          }
+          return;
         }
-        rarityStats[rarity].total++;
+
+        const physicalLabel = getPhysicalRarityLabel(rarityRaw);
+        if(!rarityStats[physicalLabel]) {
+          rarityStats[physicalLabel] = { collected: 0, total: 0 };
+        }
+        rarityStats[physicalLabel].total++;
         if(col[card.ID] && col[card.ID].collected) {
-          rarityStats[rarity].collected++;
+          rarityStats[physicalLabel].collected++;
         }
       });
       
       // Build rarity display string
-      const rarityOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil'];
-      const rarityDisplay = rarityOrder
-        .filter(r => rarityStats[r])
-        .map(r => `${r} ${rarityStats[r].collected}/${rarityStats[r].total}`)
-        .join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+      const physicalOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil'];
+      const virtualOrder = ['CV', 'UV', 'RV', 'R+V', 'URV'];
+      const rarityDisplay = hasVirtualRarity
+        ? virtualOrder
+            .filter(r => virtualStats[r])
+            .map(r => `${r} ${virtualStats[r].collected}/${virtualStats[r].total}`)
+            .join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
+        : physicalOrder
+            .filter(r => rarityStats[r])
+            .map(r => `${r} ${rarityStats[r].collected}/${rarityStats[r].total}`)
+            .join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
       
       // Get pack opens for this set
       let packStats = {};
@@ -449,7 +518,8 @@
         const count = (col[card.ID] && col[card.ID].count) || 0;
         const checkmark = isCollected ? '✓' : '';
         const rarity = card.Rarity || card['Rarity'] || '';
-        const rarityAbbr = rarity ? ` (${rarity.charAt(0).toUpperCase()})` : '';
+        const rarityCode = getRarityAbbr(rarity);
+        const rarityAbbr = rarityCode ? ` (${rarityCode})` : '';
         info.innerHTML = `${checkmark} ${card.Name||''}${rarityAbbr}<br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
         
         cardEl.appendChild(img);

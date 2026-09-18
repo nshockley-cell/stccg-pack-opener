@@ -1,7 +1,7 @@
 // Pack opener app
 (async function(){
   // Add simple cache-busting to ensure Netlify serves latest JSON
-  const VERSION = '23';
+  const VERSION = '24';
   const cards = await fetch(`cards.json?v=${VERSION}`).then(r=>r.json());
   const sets = await fetch(`sets.json?v=${VERSION}`).then(r=>r.json());
 
@@ -472,11 +472,10 @@
         uncs.forEach(c => addToRecentPulls(setCode, 'uncommon', c.ID || c.Id || c.id));
         pack.push(...uncs);
 
-        // Rare slot with scaled probabilities from Decipher math (scaled for 11/15)
+        // Rare slot with slightly boosted probabilities for virtual packs
         let rareCard;
-        const scale = 11/15;
-        const ultraProb = scale * (1/121);
-        const rarePlusProb = scale * (1/90);
+        const ultraProb = 1/50;
+        const rarePlusProb = 1/60;
 
         const roll = Math.random();
         if(pools.ultra.length > 0 && roll < ultraProb){
@@ -518,9 +517,10 @@
         // Rare slot: BOG foils (10% chance replacing rare), Ultra Rare 1/121, Rare Plus 1/90, Regular Rare otherwise
         let rareCard;
         
-        // BOG special handling: 10% chance for foil replacing rare slot
-        if(setCode === 'BOG' && pools.foil.length > 0 && Math.random() < 0.1) {
-          rareCard = pools.foil[Math.floor(Math.random() * pools.foil.length)];
+        // BOG special handling: 10% chance for a foil or promo replacing rare slot
+        const bogSpecialPool = pools.foil.concat(pools.promo);
+        if(setCode === 'BOG' && bogSpecialPool.length > 0 && Math.random() < 0.1) {
+          rareCard = bogSpecialPool[Math.floor(Math.random() * bogSpecialPool.length)];
         } else {
           const ultraRoll = Math.random();
           if(pools.ultra.length > 0 && ultraRoll < (1/121)) {
