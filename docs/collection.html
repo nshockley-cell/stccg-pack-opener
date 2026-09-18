@@ -111,6 +111,28 @@
 
     .collection-detail { padding: 12px; }
     .collection-detail h2 { margin: 0 0 12px 0; color: #fff; font-family: 'Futura', sans-serif; }
+    .collection-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 16px 0;
+      padding: 10px;
+      background: #071b2c;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+    }
+    .collection-filters label { color: #cbd5e1; font-family: 'Futura', sans-serif; }
+    .collection-filters select {
+      min-width: 170px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 5px;
+      background: #0b2a3f;
+      color: #f8fafc;
+      font-family: 'Futura', sans-serif;
+    }
+    .filter-result-count { margin-left: auto; color: #94a3b8; font-family: 'Futura', sans-serif; }
     .cards-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
     .collection-card { 
       background: #0b1a2a; 
@@ -277,6 +299,9 @@
     let col = {};
     let setKeys = [];
     let setsData = {};  // Map set codes to pack art and names
+    let physicalSetCodes = [];
+    let virtualSetCodes = [];
+    let allCards = [];
 
     function loadCompletedSets(){
       try { return JSON.parse(localStorage.getItem('stccg_completed_sets')||'[]'); } catch(e){ return []; }
@@ -413,7 +438,30 @@
       return up.charAt(0);
     }
 
-    function renderSetDetail(setCode){
+    function getCardSetName(card){
+      return card['Set Name'] || card.SetName || card['Set_Code'] || card['Set Code'] || '';
+    }
+
+    function getCardsForScope(setCode, scope, cardType, affiliation){
+      let cards = scope === 'physical'
+        ? allCards.filter(card => physicalSetCodes.includes((card['Set Code'] || '').trim()))
+        : scope === 'virtual'
+          ? allCards.filter(card => virtualSetCodes.includes((card['Set Code'] || '').trim()))
+          : (bySet[setCode] || []).slice();
+
+      if(cardType) cards = cards.filter(card => (card['Card Type'] || '').trim() === cardType);
+      if(affiliation){
+        cards = cards.filter(card => (card['Affiliation'] || '')
+          .split('/')
+          .map(value => value.trim())
+          .includes(affiliation));
+      }
+      return cards;
+    }
+
+    function renderSetDetail(setCode, selectedScope = 'selected', selectedCardType = '', selectedAffiliation = ''){
+      const scope = selectedScope === 'selected' ? 'selected' : selectedScope;
+      const filteredCards = getCardsForScope(setCode, scope, selectedCardType, selectedAffiliation);
       // Calculate rarity counts
       const rarityStats = {};
       const virtualStats = {};
@@ -445,7 +493,7 @@
         return 'Unknown';
       }
 
-      bySet[setCode].forEach(card => {
+      filteredCards.forEach(card => {
         const rarityRaw = card.Rarity || card['Rarity'] || 'Unknown';
         const virtualCode = getVirtualRarityCode(rarityRaw);
         if(virtualCode){
@@ -488,12 +536,30 @@
       try { packStats = JSON.parse(localStorage.getItem('stccg_pack_stats')||'{}'); } catch(e){}
       const packsOpened = packStats[setCode] || 0;
       console.log('Pack stats for', setCode, ':', packsOpened, 'Full stats:', packStats);
-      const packsDisplay = packsOpened > 0 ? `<div style="font-family: 'Futura', sans-serif; font-size: 0.95rem; color: #64748b; margin-bottom: 8px; text-align: center;">📦 ${packsOpened} pack${packsOpened !== 1 ? 's' : ''} opened</div>` : '';
+      const packsDisplay = scope === 'selected' && packsOpened > 0 ? `<div style="font-family: 'Futura', sans-serif; font-size: 0.95rem; color: #64748b; margin-bottom: 8px; text-align: center;">📦 ${packsOpened} pack${packsOpened !== 1 ? 's' : ''} opened</div>` : '';
       
+      const setTitle = scope === 'physical' ? 'All Physical Sets' : scope === 'virtual' ? 'All Virtual Sets' : (bySet[setCode]?.[0]?.['Set Name'] || setCode);
       detailView.innerHTML = `
         <div class="back-button"><button onclick="goBack()">← Back to Sets</button></div>
         <div class="collection-detail">
-          <h2>${bySet[setCode][0]['Set Name']||setCode}</h2>
+          <h2>${setTitle}</h2>
+          <div class="collection-filters">
+            <label for="collection-scope">View</label>
+            <select id="collection-scope">
+              <option value="selected" ${scope === 'selected' ? 'selected' : ''}>Current Set</option>
+              <option value="physical" ${scope === 'physical' ? 'selected' : ''}>All Physical Sets</option>
+              <option value="virtual" ${scope === 'virtual' ? 'selected' : ''}>All Virtual Sets</option>
+            </select>
+            <label for="collection-card-type">Card Type</label>
+            <select id="collection-card-type">
+              <option value="">All Card Types</option>
+            </select>
+            <label for="collection-affiliation">Affiliation</label>
+            <select id="collection-affiliation">
+              <option value="">All Affiliations</option>
+            </select>
+            <span class="filter-result-count">${filteredCards.length} cards</span>
+          </div>
           ${packsDisplay}
           <div style="font-family: 'Futura', sans-serif; font-size: 1rem; color: #94a3b8; margin-bottom: 16px; text-align: center;">
             ${rarityDisplay}
@@ -502,8 +568,39 @@
         </div>
       `;
       
+      const cardTypeSelect = document.getElementById('collection-card-type');
+      const cardTypes = [...new Set(allCards.map(card => (card['Card Type'] || '').trim()).filter(Boolean))].sort();
+      cardTypes.forEach(cardType => {
+        const option = document.createElement('option');
+        option.value = cardType;
+        option.textContent = cardType;
+        option.selected = cardType === selectedCardType;
+        cardTypeSelect.appendChild(option);
+      });
+      const affiliationSelect = document.getElementById('collection-affiliation');
+      const affiliations = [...new Set(allCards.flatMap(card => (card['Affiliation'] || '')
+        .split('/')
+        .map(value => value.trim())
+        .filter(Boolean)))].sort();
+      affiliations.forEach(affiliation => {
+        const option = document.createElement('option');
+        option.value = affiliation;
+        option.textContent = affiliation;
+        option.selected = affiliation === selectedAffiliation;
+        affiliationSelect.appendChild(option);
+      });
+      document.getElementById('collection-scope').addEventListener('change', event => {
+        renderSetDetail(setCode, event.target.value, cardTypeSelect.value, affiliationSelect.value);
+      });
+      cardTypeSelect.addEventListener('change', event => {
+        renderSetDetail(setCode, document.getElementById('collection-scope').value, event.target.value, affiliationSelect.value);
+      });
+      affiliationSelect.addEventListener('change', event => {
+        renderSetDetail(setCode, document.getElementById('collection-scope').value, cardTypeSelect.value, event.target.value);
+      });
+
       const grid = document.getElementById('cards-grid');
-      bySet[setCode].forEach(card=>{
+      filteredCards.forEach(card=>{
         const cardEl = document.createElement('div');
         const isCollected = col[card.ID] && col[card.ID].collected;
         cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
@@ -523,6 +620,13 @@
         info.innerHTML = `${checkmark} ${card.Name||''}${rarityAbbr}<br><span style="font-size:0.9rem; color:#94a3b8;">x${count}</span>`;
         
         cardEl.appendChild(img);
+        if(scope !== 'selected'){
+          const setInfo = document.createElement('div');
+          setInfo.className = 'card-info';
+          setInfo.style.cssText = 'font-size:0.8rem;color:#94a3b8;margin-top:4px;';
+          setInfo.textContent = getCardSetName(card);
+          cardEl.appendChild(setInfo);
+        }
         cardEl.appendChild(info);
         cardEl.addEventListener('click', () => showCardModal(card, count, rarityAbbr));
         grid.appendChild(cardEl);
@@ -561,9 +665,19 @@
     // Init
     (async function(){
       try {
-        const cards = await fetch('cards.json?v=' + Date.now()).then(r=>r.json());
-        const sets = await fetch('sets.json?v=' + Date.now()).then(r=>r.json());
+        const [cards, sets, physicalCodes, virtualCodes] = await Promise.all([
+          fetch('cards.json?v=' + Date.now()).then(r=>r.json()),
+          fetch('sets.json?v=' + Date.now()).then(r=>r.json()),
+          fetch('decipher_sets.json?v=' + Date.now()).then(r=>r.json()),
+          fetch('virtual_sets.json?v=' + Date.now()).then(r=>r.json())
+        ]);
         
+        allCards = cards;
+        physicalSetCodes = [...new Set(physicalCodes.concat(['STD']))];
+        virtualSetCodes = [...new Set(virtualCodes.concat([
+          'RIF', 'WPE', 'WPH', 'TAC', 'T50', 'PWP', 'COA', 'GIF', 'EQU',
+          'WHO', 'TNE', 'PAR', 'SOL', 'LFS', 'TWI', 'DRP', 'COC'
+        ]))].map(code => code === '50' ? 'T50' : code);
         bySet = {};
         cards.forEach(c=>{
           const set = (c['Set Code']||'').trim() || (c['Set Name']||'').trim();
