@@ -630,22 +630,10 @@
       header.innerHTML = `<div class="muted">Pack ${i+1}</div><div class="muted">${pack.length} cards</div><div><button class="flip-all-btn">Flip All</button></div>`;
       packEl.appendChild(header);
       const grid = document.createElement('div');
-      grid.className = 'pack-grid stack-mode';
-      let stackActive = true;
-      const stackCards = [];
-
-      const updateStack = () => {
-        stackCards.forEach((stackCard, stackIndex) => {
-          stackCard.classList.toggle('stack-current', stackIndex === 0);
-          stackCard.style.zIndex = String(stackCards.length - stackIndex);
-          stackCard.style.setProperty('--stack-depth', Math.min(stackIndex, 5));
-        });
-      };
+      grid.className = 'pack-grid';
 
       pack.forEach((c, idx)=>{
         const cardEl = document.createElement('div'); cardEl.className='card';
-        stackCards.push(cardEl);
-
         // inner flippable container
         const inner = document.createElement('div'); inner.className = 'card-inner';
 
@@ -717,18 +705,9 @@
         inner.appendChild(front);
         inner.appendChild(back);
 
-        // Reveal the top card first; a second click sends it to the bottom.
+        // Flip the card and add it to the collection on first reveal.
         inner.dataset.index = idx;
         inner.addEventListener('click', ()=> {
-          if(stackActive && inner.classList.contains('is-flipped')){
-            stackCards.shift();
-            stackCards.push(cardEl);
-            cardEl.classList.remove('stack-current');
-            cardEl.classList.add('stack-complete');
-            updateStack();
-            return;
-          }
-
           inner.classList.toggle('is-flipped');
           // Add card to collection on first flip
           if(inner.classList.contains('is-flipped') && !inner.dataset.addedToCollection){
@@ -775,13 +754,10 @@
         cardEl.appendChild(rarity);
         grid.appendChild(cardEl);
       });
-      updateStack();
         // Wire up Flip All button to flip every card in this pack
         const flipBtn = header.querySelector('.flip-all-btn');
         if(flipBtn){
           flipBtn.addEventListener('click', ()=>{
-            stackActive = false;
-            grid.classList.remove('stack-mode');
             const inners = grid.querySelectorAll('.card .card-inner');
             inners.forEach(inner => {
               if(!inner.classList.contains('is-flipped')){

@@ -53,25 +53,6 @@ header p{margin:8px 0 0 0;font-size:1.1rem;color:#94a3b8}
 .card-row img{width:60px;height:90px;object-fit:contain;background:#041826;padding:4px;border-radius:4px}
 .checkbox{width:18px;height:18px}
 .pack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:12px}
-.pack-grid.stack-mode{
-  display:block;
-  position:relative;
-  min-height:300px;
-  padding:12px;
-}
-.pack-grid.stack-mode .card{
-  position:absolute;
-  top:12px;
-  left:50%;
-  width:min(100%,260px);
-  height:286px;
-  transform:translateX(-50%) translateY(calc(var(--stack-depth, 0) * 1px));
-  transition:transform .25s ease, box-shadow .25s ease;
-  box-shadow:0 3px 0 rgba(255,255,255,.04), 0 8px 16px rgba(0,0,0,.35);
-}
-.pack-grid.stack-mode .card:not(.stack-current) .card-inner{pointer-events:none}
-.pack-grid.stack-mode .card:not(.stack-current){visibility:hidden}
-.pack-grid.stack-mode .card.stack-current{box-shadow:0 8px 20px rgba(0,0,0,.55)}
 .pack-tile{
   border-radius:8px;
   cursor:pointer;
