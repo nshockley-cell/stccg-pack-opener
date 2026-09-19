@@ -1140,6 +1140,19 @@
   }
 
   async function backfillCompletedRewards(){
+    if(!localStorage.getItem('stccg_existing_progress_backfill_v1')){
+      const knownCompletedSets = ['PRE', 'FCO', 'ATP', 'ARM', 'TSD'];
+      const knownCompletedAchievements = ['enterprise_d_senior_staff', 'enterprise_e_senior_staff', 'tribbles'];
+      knownCompletedSets.forEach(setCode => {
+        const reward = smallPromoSetCodes.includes(setCode) ? 150 : getPackCost(setCode) * 100;
+        grantCoins(reward, `${setCode} existing set completion`, `set:${setCode}`);
+      });
+      knownCompletedAchievements.forEach(achievementId => {
+        grantCoins(50, `${achievementId} existing achievement`, `achievement:${achievementId}`);
+      });
+      localStorage.setItem('stccg_existing_progress_backfill_v1', 'true');
+    }
+
     const collection = loadCollection();
     const setCodes = [...new Set(cards.map(card => (card['Set Code'] || '').trim()).filter(Boolean))];
     setCodes.forEach(setCode => {
