@@ -12,6 +12,12 @@
       font-display: block;
     }
     .set-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 12px; }
+    @media(min-width: 1200px) {
+      .set-tiles { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    @media(max-width: 1199px) and (min-width: 700px) {
+      .set-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
     .set-tile { 
       border-radius: 8px; 
       cursor: pointer; 
@@ -314,7 +320,7 @@
   </nav>
 
   <main id="main-view">
-    <div id="tiles-view" class="set-tiles" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 12px;"></div>
+    <div id="tiles-view" class="set-tiles"></div>
     <div id="detail-view" style="display:none;"></div>
   </main>
 
