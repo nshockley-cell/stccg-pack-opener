@@ -244,6 +244,19 @@
       font-size: 1.2rem;
       text-align: center;
     }
+    .trade-in-btn {
+      margin-top: 16px;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 6px;
+      background: #ca8a04;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Futura', sans-serif;
+      font-size: 1rem;
+    }
+    .trade-in-value { display: inline-block; margin-top: 6px; }
+    .trade-in-btn:disabled { opacity: 0.45; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -270,6 +283,10 @@
       <div class="stat">
         <div class="stat-value" id="completion-percent">0%</div>
         <div class="stat-label">Complete</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="collection-coin-count">0</div>
+        <div class="stat-label">Coins</div>
       </div>
     </div>
   </div>
@@ -416,6 +433,7 @@
       document.getElementById('total-cards').textContent = totalCards;
       const percentage = totalCards > 0 ? Math.round((totalCollected / totalCards) * 100) : 0;
       document.getElementById('completion-percent').textContent = percentage + '%';
+      updateCollectionCoinDisplay();
     }
 
     function getRarityAbbr(raw){
@@ -440,6 +458,49 @@
 
     function getCardSetName(card){
       return card['Set Name'] || card.SetName || card['Set_Code'] || card['Set Code'] || '';
+    }
+
+    const tradePhysicalPackCosts = {
+      PRE: 1, QCM: 1, MIR: 1, ITG: 1, TSD: 1,
+      ALT: 2, FCO: 2, TWT: 2,
+      DS9: 3, VOY: 3,
+      ROA: 4, BOG: 4, DOM: 4, BOR: 4,
+      HAD: 5, TMP: 5, WNOHGB: 5
+    };
+    function getTradeSetMultiplier(card){
+      const setCode = (card['Set Code'] || '').trim();
+      const virtualCodes = new Set(virtualSetCodes.concat(['RIF','WPE','WPH','TAC','T50','PWP','COA','GIF','EQU','WHO','TNE','PAR','SOL','LFS','TWI','DRP','COC']));
+      return virtualCodes.has(setCode) ? 2 : (tradePhysicalPackCosts[setCode] || 5);
+    }
+
+    function getTradeValue(card){
+      const rarity = String(card.Rarity || card['Rarity'] || '').toLowerCase();
+      let baseValue = 0;
+      if(rarity.includes('ultra') || rarity.includes('urv')) baseValue = 50;
+      else if(rarity.includes('rare plus') || rarity.includes('rare+') || rarity.includes('r+v')) baseValue = 25;
+      else if(rarity === 'rare' || rarity === 'rv' || rarity === 'r/v') baseValue = 10;
+      else if(rarity === 'uncommon' || rarity === 'uv' || rarity === 'u/v') baseValue = 5;
+      else if(rarity === 'common' || rarity === 'cv' || rarity === 'c/v') baseValue = 2;
+      else if(rarity.includes('foil') || rarity.includes('promo')) baseValue = 15;
+      return baseValue * getTradeSetMultiplier(card);
+    }
+
+    function tradeCard(card){
+      const id = card.ID || card.Id || card.id;
+      const collection = loadCollection();
+      const entry = id ? collection[id] : null;
+      if(!id || !entry || Number(entry.count || 0) <= 1) return false;
+      const value = getTradeValue(card);
+      if(!value) return false;
+
+      entry.count -= 1;
+      entry.collected = entry.count > 0;
+      localStorage.setItem('stccg_collection', JSON.stringify(collection));
+      const coins = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10) || 0;
+      localStorage.setItem('stccg_coins', String(coins + value));
+      col = collection;
+      updateCollectionCoinDisplay();
+      return true;
     }
 
     function getCardsForScope(setCode, scope, cardType, affiliation){
@@ -602,6 +663,7 @@
       const grid = document.getElementById('cards-grid');
       filteredCards.forEach(card=>{
         const cardEl = document.createElement('div');
+        cardEl.dataset.cardId = card.ID || '';
         const isCollected = col[card.ID] && col[card.ID].collected;
         cardEl.className = 'collection-card' + (isCollected ? ' collected' : ' uncollected');
         
@@ -644,10 +706,32 @@
       const modal = document.getElementById('card-modal');
       const img = document.getElementById('modal-image');
       const info = document.getElementById('modal-info');
+      const value = getTradeValue(card);
+      const canTrade = Number(count || 0) > 1 && value > 0;
       
       img.src = card['File Name'] || '';
       img.alt = card.Name || '';
-      info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${count}</span>`;
+      info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${count}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} coins</span>`;
+      const tradeButton = document.createElement('button');
+      tradeButton.className = 'trade-in-btn';
+      tradeButton.textContent = canTrade ? `Trade 1 duplicate for ${value} coins` : 'Need a duplicate to trade';
+      tradeButton.disabled = !canTrade;
+      tradeButton.addEventListener('click', () => {
+        if(!canTrade || !confirm(`Trade one duplicate ${card.Name || 'card'} for ${value} coins?`)) return;
+        if(!tradeCard(card)) return;
+        const updatedCount = Number((col[card.ID] || {}).count || 0);
+        info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${updatedCount}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} coins</span>`;
+        tradeButton.textContent = updatedCount > 1 ? `Trade 1 duplicate for ${value} coins` : 'Need a duplicate to trade';
+        tradeButton.disabled = updatedCount <= 1;
+        info.appendChild(tradeButton);
+        const cardTile = document.querySelector(`[data-card-id="${card.ID}"]`);
+        if(cardTile){
+          const infoBlocks = cardTile.querySelectorAll('.card-info');
+          const countBlock = infoBlocks[infoBlocks.length - 1];
+          if(countBlock) countBlock.innerHTML = `${cardTile.classList.contains('collected') ? '✓ ' : ''}${card.Name || ''}${rarityAbbr}<br><span style="font-size:0.9rem; color:#94a3b8;">x${updatedCount}</span>`;
+        }
+      });
+      info.appendChild(tradeButton);
       
       modal.classList.add('show');
     }
@@ -661,6 +745,11 @@
 
     function loadCollection(){
       try{ return JSON.parse(localStorage.getItem('stccg_collection')||'{}'); }catch(e){return{}}}
+
+    function updateCollectionCoinDisplay(){
+      const element = document.getElementById('collection-coin-count');
+      if(element) element.textContent = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10) || 0;
+    }
 
     // Init
     (async function(){
