@@ -129,7 +129,8 @@
       border-radius: 6px;
     }
     .collection-filters label { color: #cbd5e1; font-family: 'Futura', sans-serif; }
-    .collection-filters select {
+    .collection-filters select,
+    .collection-filters input {
       min-width: 170px;
       padding: 7px 9px;
       border: 1px solid rgba(255,255,255,0.14);
@@ -137,6 +138,9 @@
       background: #0b2a3f;
       color: #f8fafc;
       font-family: 'Futura', sans-serif;
+    }
+    .collection-filters input::placeholder {
+      color: #94a3b8;
     }
     .filter-result-count { margin-left: auto; color: #94a3b8; font-family: 'Futura', sans-serif; }
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
@@ -555,7 +559,24 @@
       return duplicateCount;
     }
 
-    function getCardsForScope(setCode, scope, cardType, affiliation){
+    function normalizeCollectionRarity(raw){
+      return String(raw || '').trim().toLowerCase();
+    }
+
+    function getCollectionRarityBucket(raw){
+      const r = normalizeCollectionRarity(raw);
+      if(!r) return '';
+      if(r.includes('foil')) return 'Foil';
+      if(r.includes('ultra') || r.includes('urv')) return 'Ultra Rare';
+      if(r.includes('rare plus') || r.includes('rare+') || r.includes('r+v')) return 'Rare Plus';
+      if(r.includes('rare') || r.includes('rv') || r.includes('r/v')) return 'Rare';
+      if(r.includes('uncommon') || r.includes('uv') || r.includes('u/v')) return 'Uncommon';
+      if(r.includes('common') || r.includes('cv') || r.includes('c/v')) return 'Common';
+      if(r.includes('promo')) return 'Promo';
+      return '';
+    }
+
+    function getCardsForScope(setCode, scope, cardType, affiliation, rarity, searchTerm){
       let cards = scope === 'physical'
         ? allCards.filter(card => physicalSetCodes.includes((card['Set Code'] || '').trim()))
         : scope === 'virtual'
@@ -569,12 +590,22 @@
           .map(value => value.trim())
           .includes(affiliation));
       }
+      if(rarity){
+        cards = cards.filter(card => getCollectionRarityBucket(card.Rarity || card['Rarity']) === rarity);
+      }
+      if(searchTerm){
+        const query = searchTerm.trim().toLowerCase();
+        cards = cards.filter(card => {
+          const name = String(card.Name || card['Name'] || '').toLowerCase();
+          return name.includes(query);
+        });
+      }
       return cards;
     }
 
-    function renderSetDetail(setCode, selectedScope = 'selected', selectedCardType = '', selectedAffiliation = ''){
+    function renderSetDetail(setCode, selectedScope = 'selected', selectedCardType = '', selectedAffiliation = '', selectedRarity = '', selectedSearch = ''){
       const scope = selectedScope === 'selected' ? 'selected' : selectedScope;
-      const filteredCards = getCardsForScope(setCode, scope, selectedCardType, selectedAffiliation);
+      const filteredCards = getCardsForScope(setCode, scope, selectedCardType, selectedAffiliation, selectedRarity, selectedSearch);
       // Calculate rarity counts
       const rarityStats = {};
       const virtualStats = {};
@@ -672,6 +703,19 @@
             <select id="collection-affiliation">
               <option value="">All Affiliations</option>
             </select>
+            <label for="collection-rarity">Rarity</label>
+            <select id="collection-rarity">
+              <option value="">All Rarities</option>
+              <option value="Common" ${selectedRarity === 'Common' ? 'selected' : ''}>Common</option>
+              <option value="Uncommon" ${selectedRarity === 'Uncommon' ? 'selected' : ''}>Uncommon</option>
+              <option value="Rare" ${selectedRarity === 'Rare' ? 'selected' : ''}>Rare</option>
+              <option value="Rare Plus" ${selectedRarity === 'Rare Plus' ? 'selected' : ''}>Rare Plus</option>
+              <option value="Ultra Rare" ${selectedRarity === 'Ultra Rare' ? 'selected' : ''}>Ultra Rare</option>
+              <option value="Foil" ${selectedRarity === 'Foil' ? 'selected' : ''}>Foil</option>
+              <option value="Promo" ${selectedRarity === 'Promo' ? 'selected' : ''}>Promo</option>
+            </select>
+            <label for="collection-search">Search</label>
+            <input id="collection-search" type="search" value="${selectedSearch ? selectedSearch.replace(/"/g, '&quot;') : ''}" placeholder="Card name" />
             <span class="filter-result-count">${filteredCards.length} cards</span>
           </div>
           ${packsDisplay}
@@ -703,14 +747,22 @@
         option.selected = affiliation === selectedAffiliation;
         affiliationSelect.appendChild(option);
       });
+      const raritySelect = document.getElementById('collection-rarity');
+      const searchInput = document.getElementById('collection-search');
       document.getElementById('collection-scope').addEventListener('change', event => {
-        renderSetDetail(setCode, event.target.value, cardTypeSelect.value, affiliationSelect.value);
+        renderSetDetail(setCode, event.target.value, cardTypeSelect.value, affiliationSelect.value, raritySelect.value, searchInput.value);
       });
       cardTypeSelect.addEventListener('change', event => {
-        renderSetDetail(setCode, document.getElementById('collection-scope').value, event.target.value, affiliationSelect.value);
+        renderSetDetail(setCode, document.getElementById('collection-scope').value, event.target.value, affiliationSelect.value, raritySelect.value, searchInput.value);
       });
       affiliationSelect.addEventListener('change', event => {
-        renderSetDetail(setCode, document.getElementById('collection-scope').value, cardTypeSelect.value, event.target.value);
+        renderSetDetail(setCode, document.getElementById('collection-scope').value, cardTypeSelect.value, event.target.value, raritySelect.value, searchInput.value);
+      });
+      raritySelect.addEventListener('change', event => {
+        renderSetDetail(setCode, document.getElementById('collection-scope').value, cardTypeSelect.value, affiliationSelect.value, event.target.value, searchInput.value);
+      });
+      searchInput.addEventListener('input', event => {
+        renderSetDetail(setCode, document.getElementById('collection-scope').value, cardTypeSelect.value, affiliationSelect.value, raritySelect.value, event.target.value);
       });
 
       const grid = document.getElementById('cards-grid');
