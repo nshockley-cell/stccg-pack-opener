@@ -603,6 +603,7 @@
         if(r.includes('RARE')) return 'Rare';
         if(r.includes('UNCOMMON')) return 'Uncommon';
         if(r.includes('COMMON')) return 'Common';
+        if(r.includes('PROMO')) return 'Promo';
         return 'Unknown';
       }
 
@@ -632,7 +633,7 @@
       });
       
       // Build rarity display string
-      const physicalOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil'];
+      const physicalOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil', 'Promo'];
       const virtualOrder = ['CV', 'UV', 'RV', 'R+V', 'URV'];
       const rarityDisplay = hasVirtualRarity
         ? virtualOrder
