@@ -476,7 +476,7 @@
       const up = r.toUpperCase();
       if(['CV','UV','RV','R+V','URV'].includes(up)) return up;
       if(up.includes('URV')) return 'URV';
-      if(up.includes('R+V') || up.includes('RARE PLUS') || up.includes('RARE+')) return 'R+V';
+      if(up.includes('R+V')) return 'R+V';
       if(up.includes('RARE') && up.includes('VIRTUAL')) return 'RV';
       if(up.includes('UNCOMMON') && up.includes('VIRTUAL')) return 'UV';
       if(up.includes('COMMON') && up.includes('VIRTUAL')) return 'CV';
