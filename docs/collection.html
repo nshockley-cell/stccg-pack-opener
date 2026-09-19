@@ -139,7 +139,13 @@
       font-family: 'Futura', sans-serif;
     }
     .filter-result-count { margin-left: auto; color: #94a3b8; font-family: 'Futura', sans-serif; }
-    .cards-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    @media(min-width: 1200px) {
+      .cards-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    @media(max-width: 1199px) and (min-width: 700px) {
+      .cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
     .collection-card { 
       background: #0b1a2a; 
       border-radius: 6px; 
@@ -150,7 +156,7 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      width: 150px;
+      width: auto;
       flex-shrink: 0;
     }
     .collection-card:hover { background: #0f2233; }
