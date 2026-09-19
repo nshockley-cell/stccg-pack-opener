@@ -14,7 +14,7 @@
   </header>
 
   <nav class="topnav">
-    <a href="collection.html?v=19">My Collection</a>
+    <a href="collection.html?v=21">My Collection</a>
     <a href="virtual.html">Virtual Pack Opener</a>
     <a href="achievements.html">Achievements</a>
     <button id="clear" class="collect-btn" style="margin-left:auto;margin-right:12px">Clear All Cards</button>
@@ -34,6 +34,6 @@
     window.PHYSICAL_SHORT_CODES = [];
     fetch('decipher_sets.json').then(r=>r.json()).then(arr=>{ window.PHYSICAL_SHORT_CODES = arr; }).catch(()=>{ window.PHYSICAL_SHORT_CODES = []; });
   </script>
-  <script src="app.js?v=33"></script>
+  <script src="app.js?v=34"></script>
 </body>
 </html>

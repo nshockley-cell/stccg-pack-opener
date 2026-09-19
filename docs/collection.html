@@ -262,6 +262,7 @@
     }
     .trade-in-value { display: inline-block; margin-top: 10px; }
     .trade-in-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .trade-all-btn { background: #92400e; }
     @media(max-width: 700px){
       .card-modal-content { flex-direction: column; gap: 12px; max-height: 95%; }
       .card-modal-content img { width: min(600px, 82vw); height: min(68vh, 700px); }
@@ -296,8 +297,11 @@
       </div>
       <div class="stat">
         <div class="stat-value" id="collection-coin-count">0</div>
-        <div class="stat-label">Bars of Gold Pressed Latinum</div>
+        <div class="stat-label">Latinum Available</div>
       </div>
+      <div class="stat">
+        <div class="stat-value" id="collection-value-count">0</div>
+        <div class="stat-label">Collection Value in Latinum</div>
     </div>
   </div>
 
@@ -337,6 +341,12 @@
       localStorage.setItem('stccg_completed_sets', JSON.stringify(list));
     }
 
+    function getCollectionValue(){
+      return allCards.reduce((total, card) => {
+        const count = Number((col[card.ID] || {}).count || 0);
+        return total + (getTradeValue(card) * count);
+      }, 0);
+    }
     function showToast(message){
       let toast = document.getElementById('completion-toast');
       if(!toast){
@@ -444,6 +454,8 @@
       const percentage = totalCards > 0 ? Math.round((totalCollected / totalCards) * 100) : 0;
       document.getElementById('completion-percent').textContent = percentage + '%';
       updateCollectionCoinDisplay();
+      const valueElement = document.getElementById('collection-value-count');
+      if(valueElement) valueElement.textContent = getCollectionValue();
     }
 
     function getRarityAbbr(raw){
@@ -511,6 +523,24 @@
       col = collection;
       updateCollectionCoinDisplay();
       return true;
+    }
+
+    function sellAllDuplicates(card){
+      const id = card.ID || card.Id || card.id;
+      const collection = loadCollection();
+      const entry = id ? collection[id] : null;
+      const duplicateCount = entry ? Math.max(0, Number(entry.count || 0) - 1) : 0;
+      const value = getTradeValue(card);
+      if(!id || !entry || duplicateCount < 1 || !value) return 0;
+
+      entry.count = 1;
+      entry.collected = true;
+      localStorage.setItem('stccg_collection', JSON.stringify(collection));
+      const currentBalance = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10) || 0;
+      localStorage.setItem('stccg_coins', String(currentBalance + (duplicateCount * value)));
+      col = collection;
+      updateCollectionCoinDisplay();
+      return duplicateCount;
     }
 
     function getCardsForScope(setCode, scope, cardType, affiliation){
@@ -726,14 +756,30 @@
       tradeButton.className = 'trade-in-btn';
       tradeButton.textContent = canTrade ? `Trade 1 duplicate for ${value} Bars of Gold Pressed Latinum` : 'Need a duplicate to trade';
       tradeButton.disabled = !canTrade;
+      const sellAllButton = document.createElement('button');
+      sellAllButton.className = 'trade-in-btn trade-all-btn';
+      sellAllButton.textContent = canTrade ? `Sell all duplicates for ${value * (Number(count) - 1)} Bars of Gold Pressed Latinum` : 'No duplicates to sell';
+      sellAllButton.disabled = !canTrade;
+
+      const refreshTradeControls = updatedCount => {
+        info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${updatedCount}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} Bars of Gold Pressed Latinum</span>`;
+        const hasDuplicate = updatedCount > 1;
+        tradeButton.textContent = hasDuplicate ? `Trade 1 duplicate for ${value} Bars of Gold Pressed Latinum` : 'Need a duplicate to trade';
+        tradeButton.disabled = !hasDuplicate;
+        sellAllButton.textContent = hasDuplicate ? `Sell all duplicates for ${value * (updatedCount - 1)} Bars of Gold Pressed Latinum` : 'No duplicates to sell';
+        sellAllButton.disabled = !hasDuplicate;
+        info.appendChild(tradeButton);
+        info.appendChild(sellAllButton);
+        updateCollectionCoinDisplay();
+        const valueElement = document.getElementById('collection-value-count');
+        if(valueElement) valueElement.textContent = getCollectionValue();
+      };
+
       tradeButton.addEventListener('click', () => {
         if(!canTrade || !confirm(`Trade one duplicate ${card.Name || 'card'} for ${value} Bars of Gold Pressed Latinum?`)) return;
         if(!tradeCard(card)) return;
         const updatedCount = Number((col[card.ID] || {}).count || 0);
-        info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${updatedCount}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} Bars of Gold Pressed Latinum</span>`;
-        tradeButton.textContent = updatedCount > 1 ? `Trade 1 duplicate for ${value} Bars of Gold Pressed Latinum` : 'Need a duplicate to trade';
-        tradeButton.disabled = updatedCount <= 1;
-        info.appendChild(tradeButton);
+        refreshTradeControls(updatedCount);
         const cardTile = document.querySelector(`[data-card-id="${card.ID}"]`);
         if(cardTile){
           const infoBlocks = cardTile.querySelectorAll('.card-info');
@@ -741,7 +787,20 @@
           if(countBlock) countBlock.innerHTML = `${cardTile.classList.contains('collected') ? '✓ ' : ''}${card.Name || ''}${rarityAbbr}<br><span style="font-size:0.9rem; color:#94a3b8;">x${updatedCount}</span>`;
         }
       });
+      sellAllButton.addEventListener('click', () => {
+        const duplicateCount = Math.max(0, Number((col[card.ID] || {}).count || 0) - 1);
+        if(duplicateCount < 1 || !confirm(`Sell ${duplicateCount} duplicate${duplicateCount === 1 ? '' : 's'} of ${card.Name || 'card'} for ${value * duplicateCount} Bars of Gold Pressed Latinum?`)) return;
+        if(!sellAllDuplicates(card)) return;
+        refreshTradeControls(1);
+        const cardTile = document.querySelector(`[data-card-id="${card.ID}"]`);
+        if(cardTile){
+          const infoBlocks = cardTile.querySelectorAll('.card-info');
+          const countBlock = infoBlocks[infoBlocks.length - 1];
+          if(countBlock) countBlock.innerHTML = `${cardTile.classList.contains('collected') ? '✓ ' : ''}${card.Name || ''}${rarityAbbr}<br><span style="font-size:0.9rem; color:#94a3b8;">x1</span>`;
+        }
+      });
       info.appendChild(tradeButton);
+      info.appendChild(sellAllButton);
       
       modal.classList.add('show');
     }

@@ -916,7 +916,7 @@
 
   function updateCoinDisplay(){
     document.querySelectorAll('[data-coin-balance]').forEach(element => {
-      element.textContent = `Bars of Gold Pressed Latinum: ${loadCoins()}`;
+      element.textContent = `Latinum Available: ${loadCoins()}`;
     });
   }
 
