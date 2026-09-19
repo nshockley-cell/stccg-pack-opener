@@ -142,6 +142,18 @@
     .collection-filters input::placeholder {
       color: #94a3b8;
     }
+    .collection-clear-filters {
+      padding: 7px 12px;
+      border: 1px solid rgba(14,165,233,0.5);
+      border-radius: 5px;
+      background: #0b2a3f;
+      color: #e2e8f0;
+      cursor: pointer;
+      font-family: 'Futura', sans-serif;
+    }
+    .collection-clear-filters:hover {
+      background: #123a58;
+    }
     .filter-result-count { margin-left: auto; color: #94a3b8; font-family: 'Futura', sans-serif; }
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     @media(min-width: 1200px) {
@@ -716,6 +728,7 @@
             </select>
             <label for="collection-search">Search</label>
             <input id="collection-search" type="search" value="${selectedSearch ? selectedSearch.replace(/"/g, '&quot;') : ''}" placeholder="Card name" />
+            <button id="collection-clear-filters" class="collection-clear-filters" type="button">Clear Filters</button>
             <span class="filter-result-count">${filteredCards.length} cards</span>
           </div>
           ${packsDisplay}
@@ -749,6 +762,7 @@
       });
       const raritySelect = document.getElementById('collection-rarity');
       const searchInput = document.getElementById('collection-search');
+      const clearFiltersButton = document.getElementById('collection-clear-filters');
       document.getElementById('collection-scope').addEventListener('change', event => {
         renderSetDetail(setCode, event.target.value, cardTypeSelect.value, affiliationSelect.value, raritySelect.value, searchInput.value);
       });
@@ -763,6 +777,13 @@
       });
       searchInput.addEventListener('input', event => {
         renderSetDetail(setCode, document.getElementById('collection-scope').value, cardTypeSelect.value, affiliationSelect.value, raritySelect.value, event.target.value);
+      });
+      clearFiltersButton.addEventListener('click', () => {
+        cardTypeSelect.value = '';
+        affiliationSelect.value = '';
+        raritySelect.value = '';
+        searchInput.value = '';
+        renderSetDetail(setCode, 'selected', '', '', '', '');
       });
 
       const grid = document.getElementById('cards-grid');
