@@ -1138,6 +1138,44 @@
     const setName = setCards[0]['Set Name'] || setCode;
     grantCoins(reward, `${setName} set completion`, `set:${setCode}`);
   }
+
+  async function backfillCompletedRewards(){
+    const collection = loadCollection();
+    const setCodes = [...new Set(cards.map(card => (card['Set Code'] || '').trim()).filter(Boolean))];
+    setCodes.forEach(setCode => {
+      const representative = cards.find(card => (card['Set Code'] || '').trim() === setCode);
+      if(representative) rewardSetCompletion(representative, collection);
+    });
+    let storedCompletedSets = [];
+    try { storedCompletedSets = JSON.parse(localStorage.getItem('stccg_completed_sets') || '[]'); } catch(e) { storedCompletedSets = []; }
+    storedCompletedSets.forEach(setCode => {
+      const reward = smallPromoSetCodes.includes(setCode) ? 150 : getPackCost(setCode) * 100;
+      grantCoins(reward, `${setCode} set completion`, `set:${setCode}`);
+    });
+
+    try {
+      const response = await fetch('achievements.json?v=' + Date.now());
+      const data = await response.json();
+      const unlocked = loadUnlockedAchievements();
+      let changed = false;
+      (data.achievements || []).forEach(achievement => {
+        const complete = achievement.type === 'paired' && achievement.pairs
+          ? achievement.pairs.every(pair => pair.every(cardId => collection[cardId] && collection[cardId].count > 0))
+          : (achievement.required_cards || []).every(cardId => collection[cardId] && collection[cardId].count > 0);
+        if(complete || unlocked.includes(achievement.id)){
+          if(!unlocked.includes(achievement.id)){
+            unlocked.push(achievement.id);
+            changed = true;
+          }
+          grantCoins(50, `${achievement.title} achievement`, `achievement:${achievement.id}`);
+        }
+      });
+      if(changed) saveUnlockedAchievements(unlocked);
+    } catch(e) {
+      console.log('Coin reward backfill skipped:', e.message);
+    }
+    updateCoinDisplay();
+  }
   
   function showRarityCompletionToast(completion){
     // Create toast container
@@ -1312,4 +1350,5 @@
   }
 
   claimDailyCoins();
+  backfillCompletedRewards();
 })();
