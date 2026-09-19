@@ -1213,6 +1213,7 @@
     `;
     
     const rarityDisplay = completion.rarity.charAt(0).toUpperCase() + completion.rarity.slice(1);
+    const rewardAmount = getRarityReward(completion.rarity);
     
     toast.innerHTML = `
       <div style="display: flex; align-items: center; gap: 16px;">
@@ -1223,6 +1224,7 @@
           <div style="font-size: 0.95rem; color: #cbd5e1;">
             All ${completion.cardCount} ${rarityDisplay} cards collected!
           </div>
+          ${rewardAmount ? `<div style="font-size: 0.95rem; color: #facc15; margin-top: 8px;">+${rewardAmount} Latinum added to your funds</div>` : ''}
         </div>
       </div>
     `;
