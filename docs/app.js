@@ -12,6 +12,19 @@
   // Default virtual-only short codes to include even if not listed on the page
   const defaultVirtualShortCodes = ['COC'];
 
+  // Coin economy configuration.
+  const DAILY_COINS = 100;
+  const DEFAULT_PHYSICAL_PACK_COST = 5;
+  const physicalPackCosts = {
+    PRE: 1, QCM: 1, MIR: 1, ITG: 1, TSD: 1,
+    ALT: 2, FCO: 2, TWT: 2,
+    DS9: 3, VOY: 3,
+    ROA: 4, BOG: 4, DOM: 4, BOR: 4,
+    HAD: 5, TMP: 5, WNOHGB: 5
+  };
+  const smallPromoSetCodes = ['AGT','ARM','ATP','EFC','EPR','ENT','FAJ','FAN','ITG','OTD','SAN','STD'];
+  const rarityCoinRewards = {common: 20, uncommon: 40, rare: 60, 'rare plus': 80, 'ultra rare': 50};
+
   // Build set map from cards (use Set Code + Set Name from cards)
   const setsByCode = {};
   cards.forEach(c=>{
@@ -134,15 +147,12 @@
     info.className = 'pack-tile-info';
     info.innerHTML = `
       <div class="pack-tile-name">${s.name}</div>
+      <div class="pack-tile-code">Cost: ${getPackCost(s.code)} coin${getPackCost(s.code) === 1 ? '' : 's'}</div>
     `;
     
     tile.appendChild(info);
     tile.addEventListener('click', ()=>{
-      const pack = generatePackForSet(s.code);
-      incrementPackOpens(s.code);
-      renderPacks([pack], s.code, s.name);
-      // Scroll to cards
-      document.getElementById('pack-container').scrollIntoView({behavior:'smooth'});
+      openPack(s.code, s.name);
     });
     
     packSelection.appendChild(tile);
@@ -795,10 +805,7 @@
       openAnotherBtn.className = 'pack-action-btn';
       openAnotherBtn.textContent = `Open Another ${setName}`;
       openAnotherBtn.addEventListener('click', () => {
-        const newPack = generatePackForSet(setCode);
-        incrementPackOpens(setCode);
-        renderPacks([newPack], setCode, setName);
-        document.getElementById('pack-container').scrollIntoView({behavior:'smooth'});
+        openPack(setCode, setName);
       });
       
       const backToTopBtn = document.createElement('button');
@@ -889,6 +896,70 @@
     localStorage.setItem('stccg_achievements', JSON.stringify(list));
   }
 
+  function getPackCost(setCode){
+    if(setCode === 'VPROMO' || (typeof window !== 'undefined' && window.VIRTUAL_ONLY)) return 2;
+    return physicalPackCosts[setCode] || DEFAULT_PHYSICAL_PACK_COST;
+  }
+
+  function loadCoins(){
+    const value = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  }
+
+  function loadCoinRewards(){
+    try { return JSON.parse(localStorage.getItem('stccg_coin_rewards') || '[]'); } catch(e){ return []; }
+  }
+
+  function saveCoinRewards(rewards){
+    localStorage.setItem('stccg_coin_rewards', JSON.stringify(rewards));
+  }
+
+  function updateCoinDisplay(){
+    document.querySelectorAll('[data-coin-balance]').forEach(element => {
+      element.textContent = `Coins: ${loadCoins()}`;
+    });
+  }
+
+  function claimDailyCoins(){
+    const today = new Date().toISOString().slice(0, 10);
+    if(localStorage.getItem('stccg_daily_coins_date') !== today){
+      localStorage.setItem('stccg_coins', String(loadCoins() + DAILY_COINS));
+      localStorage.setItem('stccg_daily_coins_date', today);
+      console.log(`Daily coin drop: +${DAILY_COINS}`);
+    }
+    updateCoinDisplay();
+  }
+
+  function grantCoins(amount, reason, rewardKey){
+    const awarded = loadCoinRewards();
+    if(rewardKey && awarded.includes(rewardKey)) return false;
+    localStorage.setItem('stccg_coins', String(loadCoins() + amount));
+    if(rewardKey){
+      awarded.push(rewardKey);
+      saveCoinRewards(awarded);
+    }
+    updateCoinDisplay();
+    console.log(`Coins awarded: +${amount} (${reason})`);
+    return true;
+  }
+
+  function openPack(setCode, setName){
+    claimDailyCoins();
+    const cost = getPackCost(setCode);
+    const balance = loadCoins();
+    if(balance < cost){
+      alert(`You need ${cost} coins to open ${setName}. You have ${balance}.`);
+      return false;
+    }
+    localStorage.setItem('stccg_coins', String(balance - cost));
+    updateCoinDisplay();
+    const pack = generatePackForSet(setCode);
+    incrementPackOpens(setCode);
+    renderPacks([pack], setCode, setName);
+    document.getElementById('pack-container').scrollIntoView({behavior:'smooth'});
+    return true;
+  }
+
   async function checkAchievements(collection){
     try {
       const response = await fetch('achievements.json?v=' + Date.now());
@@ -901,10 +972,10 @@
         // Skip if already unlocked
         if(unlocked.includes(achievement.id)) return;
         
-        // Check if all required cards are in collection
-        const isComplete = achievement.required_cards.every(cardId => {
-          return collection[cardId] && collection[cardId].count > 0;
-        });
+        // Check standard and paired achievements using the same rules as the achievements page.
+        const isComplete = achievement.type === 'paired' && achievement.pairs
+          ? achievement.pairs.every(pair => pair.every(cardId => collection[cardId] && collection[cardId].count > 0))
+          : (achievement.required_cards || []).every(cardId => collection[cardId] && collection[cardId].count > 0);
 
         if(isComplete){
           unlocked.push(achievement.id);
@@ -914,6 +985,7 @@
 
       if(newUnlocks.length > 0){
         saveUnlockedAchievements(unlocked);
+        newUnlocks.forEach(achievement => grantCoins(50, `${achievement.title} achievement`, `achievement:${achievement.id}`));
         // Show toast notification for first achievement
         showAchievementToast(newUnlocks[0]);
       }
@@ -997,8 +1069,11 @@
       const id = c.ID || c.Id || c.id;
       if(!id) return;
       const r = normalizeRarity(c.Rarity || c['Rarity'] || '');
-      if(r.includes('ultra')) setCardsByRarity['ultra rare'].push(id);
-      else if(r.includes('rare plus') || r.includes('rare+')) setCardsByRarity['rare plus'].push(id);
+      if(r.includes('urv') || r.includes('ultra')) setCardsByRarity['ultra rare'].push(id);
+      else if(r.includes('r+v') || r.includes('rare plus') || r.includes('rare+')) setCardsByRarity['rare plus'].push(id);
+      else if(r === 'rv' || r === 'r/v' || r === 'r v') setCardsByRarity.rare.push(id);
+      else if(r === 'uv' || r === 'u/v' || r === 'u v') setCardsByRarity.uncommon.push(id);
+      else if(r === 'cv' || r === 'c/v' || r === 'c v') setCardsByRarity.common.push(id);
       else if(r === 'rare') setCardsByRarity.rare.push(id);
       else if(r.includes('uncommon')) setCardsByRarity.uncommon.push(id);
       else if(r.includes('common')) setCardsByRarity.common.push(id);
@@ -1025,6 +1100,43 @@
     });
     
     return completions;
+  }
+
+  function getRarityReward(rarity){
+    const value = String(rarity || '').toLowerCase();
+    if(value === 'urv' || value.includes('ultra')) return rarityCoinRewards['ultra rare'];
+    if(value === 'r+v' || value.includes('rare plus') || value.includes('rare+')) return rarityCoinRewards['rare plus'];
+    if(value === 'rv' || value === 'rare') return rarityCoinRewards.rare;
+    if(value === 'uv' || value === 'uncommon') return rarityCoinRewards.uncommon;
+    if(value === 'cv' || value === 'common') return rarityCoinRewards.common;
+    return 0;
+  }
+
+  function rewardRarityCompletions(completions){
+    completions.forEach(completion => {
+      const amount = getRarityReward(completion.rarity);
+      if(amount){
+        grantCoins(amount, `${completion.setName} ${completion.rarity} completion`, `rarity:${completion.setCode}:${completion.rarity}`);
+      }
+    });
+  }
+
+  function rewardUltraRarePull(card){
+    const rarity = String(card.Rarity || card['Rarity'] || '').toLowerCase();
+    const cardId = card.ID || card.Id || card.id;
+    if(cardId && (rarity.includes('ultra') || rarity.includes('urv'))){
+      grantCoins(50, `${card.Name || cardId} Ultra Rare`, `ultra:${cardId}`);
+    }
+  }
+
+  function rewardSetCompletion(card, collection){
+    const setCode = (card['Set Code'] || card['SetCode'] || card['Set_Code'] || '').trim();
+    if(!setCode) return;
+    const setCards = cards.filter(candidate => (candidate['Set Code'] || '').trim() === setCode);
+    if(!setCards.length || !setCards.every(candidate => collection[candidate.ID] && collection[candidate.ID].count > 0)) return;
+    const reward = smallPromoSetCodes.includes(setCode) ? 150 : getPackCost(setCode) * 100;
+    const setName = setCards[0]['Set Name'] || setCode;
+    grantCoins(reward, `${setName} set completion`, `set:${setCode}`);
   }
   
   function showRarityCompletionToast(completion){
@@ -1088,6 +1200,7 @@
     col[id].count = (col[id].count||0)+1;
     col[id].collected = true;
     saveCollection(col);
+    rewardUltraRarePull(c);
     
     // Check for rarity completion for just this card
     const completions = checkRarityCompletion(col, [c]);
@@ -1105,12 +1218,16 @@
       
       if(newCompletions.length > 0){
         saveCompletedRarities(alreadyCompleted);
+        rewardRarityCompletions(newCompletions);
         // Show notification for each newly completed rarity
         newCompletions.forEach(completion => {
           showRarityCompletionToast(completion);
         });
       }
     }
+
+    rewardSetCompletion(c, col);
+    checkAchievements(col);
   }
 
   function addPackToCollection(pack){
@@ -1123,6 +1240,7 @@
       col[id].collected = true;
     });
     saveCollection(col);
+    pack.forEach(rewardUltraRarePull);
     
     // Check for rarity completions
     const completions = checkRarityCompletion(col, pack);
@@ -1140,12 +1258,15 @@
       
       if(newCompletions.length > 0){
         saveCompletedRarities(alreadyCompleted);
+        rewardRarityCompletions(newCompletions);
         // Show notification for each newly completed rarity
         newCompletions.forEach((completion, index) => {
           setTimeout(() => showRarityCompletionToast(completion), index * 500);
         });
       }
     }
+
+    pack.forEach(card => rewardSetCompletion(card, col));
     
     // Check for achievement unlocks
     checkAchievements(col);
@@ -1189,4 +1310,6 @@
       }catch(err){ console.error('Error marking achievement:', err); alert('Failed to mark achievement — see console for details.'); }
     });
   }
+
+  claimDailyCoins();
 })();
