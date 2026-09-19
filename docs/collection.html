@@ -226,7 +226,8 @@
       max-width: 90%;
       max-height: 90%;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      gap: 28px;
       align-items: center;
       cursor: default;
     }
@@ -238,11 +239,15 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     }
     .card-modal-info {
-      margin-top: 16px;
+      width: min(280px, 30vw);
+      margin-top: 0;
       color: #f8fafc;
       font-family: 'Futura', sans-serif;
       font-size: 1.2rem;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .trade-in-btn {
       margin-top: 16px;
@@ -255,8 +260,13 @@
       font-family: 'Futura', sans-serif;
       font-size: 1rem;
     }
-    .trade-in-value { display: inline-block; margin-top: 6px; }
+    .trade-in-value { display: inline-block; margin-top: 10px; }
     .trade-in-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    @media(max-width: 700px){
+      .card-modal-content { flex-direction: column; gap: 12px; max-height: 95%; }
+      .card-modal-content img { width: min(600px, 82vw); height: min(68vh, 700px); }
+      .card-modal-info { width: min(90vw, 360px); }
+    }
   </style>
 </head>
 <body>
@@ -286,7 +296,7 @@
       </div>
       <div class="stat">
         <div class="stat-value" id="collection-coin-count">0</div>
-        <div class="stat-label">Coins</div>
+        <div class="stat-label">Bars of Gold Pressed Latinum</div>
       </div>
     </div>
   </div>
@@ -496,8 +506,8 @@
       entry.count -= 1;
       entry.collected = entry.count > 0;
       localStorage.setItem('stccg_collection', JSON.stringify(collection));
-      const coins = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10) || 0;
-      localStorage.setItem('stccg_coins', String(coins + value));
+      const currentBalance = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10) || 0;
+      localStorage.setItem('stccg_coins', String(currentBalance + value));
       col = collection;
       updateCollectionCoinDisplay();
       return true;
@@ -711,17 +721,17 @@
       
       img.src = card['File Name'] || '';
       img.alt = card.Name || '';
-      info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${count}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} coins</span>`;
+      info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${count}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} Bars of Gold Pressed Latinum</span>`;
       const tradeButton = document.createElement('button');
       tradeButton.className = 'trade-in-btn';
-      tradeButton.textContent = canTrade ? `Trade 1 duplicate for ${value} coins` : 'Need a duplicate to trade';
+      tradeButton.textContent = canTrade ? `Trade 1 duplicate for ${value} Bars of Gold Pressed Latinum` : 'Need a duplicate to trade';
       tradeButton.disabled = !canTrade;
       tradeButton.addEventListener('click', () => {
-        if(!canTrade || !confirm(`Trade one duplicate ${card.Name || 'card'} for ${value} coins?`)) return;
+        if(!canTrade || !confirm(`Trade one duplicate ${card.Name || 'card'} for ${value} Bars of Gold Pressed Latinum?`)) return;
         if(!tradeCard(card)) return;
         const updatedCount = Number((col[card.ID] || {}).count || 0);
-        info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${updatedCount}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} coins</span>`;
-        tradeButton.textContent = updatedCount > 1 ? `Trade 1 duplicate for ${value} coins` : 'Need a duplicate to trade';
+        info.innerHTML = `${card.Name || ''}${rarityAbbr}<br><span style="font-size:1rem; color:#94a3b8;">Owned: x${updatedCount}</span><br><span class="trade-in-value" style="font-size:0.9rem; color:#facc15;">Trade-in value: ${value} Bars of Gold Pressed Latinum</span>`;
+        tradeButton.textContent = updatedCount > 1 ? `Trade 1 duplicate for ${value} Bars of Gold Pressed Latinum` : 'Need a duplicate to trade';
         tradeButton.disabled = updatedCount <= 1;
         info.appendChild(tradeButton);
         const cardTile = document.querySelector(`[data-card-id="${card.ID}"]`);

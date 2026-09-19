@@ -147,7 +147,7 @@
     info.className = 'pack-tile-info';
     info.innerHTML = `
       <div class="pack-tile-name">${s.name}</div>
-      <div class="pack-tile-code">Cost: ${getPackCost(s.code)} coin${getPackCost(s.code) === 1 ? '' : 's'}</div>
+      <div class="pack-tile-code">Cost: ${getPackCost(s.code)} Bars of Gold Pressed Latinum</div>
     `;
     
     tile.appendChild(info);
@@ -916,7 +916,7 @@
 
   function updateCoinDisplay(){
     document.querySelectorAll('[data-coin-balance]').forEach(element => {
-      element.textContent = `Coins: ${loadCoins()}`;
+      element.textContent = `Bars of Gold Pressed Latinum: ${loadCoins()}`;
     });
   }
 
@@ -925,7 +925,7 @@
     if(localStorage.getItem('stccg_daily_coins_date') !== today){
       localStorage.setItem('stccg_coins', String(loadCoins() + DAILY_COINS));
       localStorage.setItem('stccg_daily_coins_date', today);
-      console.log(`Daily coin drop: +${DAILY_COINS}`);
+      console.log(`Daily Bars of Gold Pressed Latinum drop: +${DAILY_COINS}`);
     }
     updateCoinDisplay();
   }
@@ -939,7 +939,7 @@
       saveCoinRewards(awarded);
     }
     updateCoinDisplay();
-    console.log(`Coins awarded: +${amount} (${reason})`);
+    console.log(`Bars of Gold Pressed Latinum awarded: +${amount} (${reason})`);
     return true;
   }
 
@@ -948,7 +948,7 @@
     const cost = getPackCost(setCode);
     const balance = loadCoins();
     if(balance < cost){
-      alert(`You need ${cost} coins to open ${setName}. You have ${balance}.`);
+      alert(`You need ${cost} Bars of Gold Pressed Latinum to open ${setName}. You have ${balance}.`);
       return false;
     }
     localStorage.setItem('stccg_coins', String(balance - cost));
