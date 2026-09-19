@@ -218,7 +218,11 @@
         pools.hasStarterCards = true;
       }
       else if(r.includes('foil')) pools.foil.push(c);
-      else if(r.includes('promo')) pools.promo.push(c);
+      else if(r.includes('promo')) {
+        // Dominion promos occupy the regular rare slot in physical packs.
+        if(setCode === 'DOM') pools.rare.push(c);
+        else pools.promo.push(c);
+      }
       else {
         // default: treat as common
         pools.common.push(c);
