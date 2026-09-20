@@ -556,6 +556,7 @@
       if(rarity.includes('ultra') || rarity.includes('urv')) baseValue = 50;
       else if(rarity.includes('rare plus') || rarity.includes('rare+') || rarity.includes('r+v')) baseValue = 25;
       else if(rarity === 'rare' || rarity === 'rv' || rarity === 'r/v') baseValue = 10;
+      else if(rarity.includes('starter') || rarity.includes('sta')) baseValue = 10;
       else if(rarity === 'uncommon' || rarity === 'uv' || rarity === 'u/v') baseValue = 5;
       else if(rarity === 'common' || rarity === 'cv' || rarity === 'c/v') baseValue = 2;
       else if(rarity.includes('foil') || rarity.includes('promo')) baseValue = 15;
