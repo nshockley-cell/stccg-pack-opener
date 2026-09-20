@@ -529,6 +529,7 @@
       if(up.includes('COMMON')) return 'C';
       if(up.includes('FOIL')) return 'F';
       if(up.includes('PROMO')) return 'P';
+      if(up.includes('STARTER') || up.includes('STA')) return 'STA';
       return up.charAt(0);
     }
 
@@ -668,6 +669,7 @@
       if(r.includes('uncommon') || r.includes('uv') || r.includes('u/v')) return 'Uncommon';
       if(r.includes('common') || r.includes('cv') || r.includes('c/v')) return 'Common';
       if(r.includes('promo')) return 'Promo';
+      if(r.includes('starter') || r.includes('sta')) return 'STA';
       return '';
     }
 
@@ -730,6 +732,7 @@
         if(r.includes('UNCOMMON')) return 'Uncommon';
         if(r.includes('COMMON')) return 'Common';
         if(r.includes('PROMO')) return 'Promo';
+        if(r.includes('STARTER') || r.includes('STA')) return 'STA';
         return 'Unknown';
       }
 
@@ -759,7 +762,7 @@
       });
       
       // Build rarity display string
-      const physicalOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil', 'Promo'];
+      const physicalOrder = ['Common', 'Uncommon', 'Rare', 'Rare Plus', 'Ultra Rare', 'Foil', 'Promo', 'STA'];
       const virtualOrder = ['CV', 'UV', 'RV', 'R+V', 'URV'];
       const rarityDisplay = hasVirtualRarity
         ? virtualOrder
@@ -816,6 +819,7 @@
               <option value="Ultra Rare" ${selectedRarity === 'Ultra Rare' ? 'selected' : ''}>Ultra Rare</option>
               <option value="Foil" ${selectedRarity === 'Foil' ? 'selected' : ''}>Foil</option>
               <option value="Promo" ${selectedRarity === 'Promo' ? 'selected' : ''}>Promo</option>
+              <option value="STA" ${selectedRarity === 'STA' ? 'selected' : ''}>STA</option>
             </select>
             <label for="collection-search">Search</label>
             <input id="collection-search" type="search" value="${selectedSearch ? selectedSearch.replace(/"/g, '&quot;') : ''}" placeholder="Card name" />
