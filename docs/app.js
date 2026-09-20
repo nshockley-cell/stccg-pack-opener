@@ -312,7 +312,12 @@
       pack.push(...commons);
 
       // 3 promos from Decipher promo pool (fallback to globalPromoPool)
+      // Boost Starter Deck II in this combined pool so it appears noticeably more often.
       let promoPool = decPools.promo.length > 0 ? decPools.promo : globalPromoPool;
+      const stdPool = promoPool.filter(card => (card['Set Code'] || '').trim() === 'STD');
+      if(stdPool.length > 0){
+        promoPool = [...promoPool, ...stdPool, ...stdPool, ...stdPool];
+      }
       const promos = sampleWithoutReplacement(promoPool, 3);
       if(promos.length < 3) promos.push(...sampleWithReplacement(promoPool, 3-promos.length));
       pack.push(...promos);
