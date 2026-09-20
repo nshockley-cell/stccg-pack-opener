@@ -20,3 +20,6 @@
 *.tmp
 *.temp
 backups/
+
+# Local Netlify folder
+.netlify

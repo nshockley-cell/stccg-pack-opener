@@ -179,6 +179,19 @@
     return up.slice(0,3);
   }
 
+  function getRarityGlowColor(raw){
+    const r = String(raw || '').toLowerCase();
+    if(r.includes('ultra') || r.includes('urv')) return '#ff8a3d';
+    if(r.includes('rare plus') || r.includes('rare+') || r.includes('r+v')) return '#8b5cf6';
+    if(r.includes('rare') || r.includes('rv')) return '#4da3ff';
+    if(r.includes('uncommon') || r.includes('uv')) return '#ff4d4d';
+    if(r.includes('common') || r.includes('cv')) return '#31d897';
+    if(r.includes('foil')) return '#ffffff';
+    if(r.includes('promo')) return '#facc15';
+    if(r.includes('starter') || r.includes('sta')) return '#c084fc';
+    return '#2563eb';
+  }
+
   function groupPools(cards, setCode){
     const pools = {common:[],uncommon:[],rare:[],rarePlus:[],ultra:[],starter:[],foil:[],promo:[],tribble:[],hasStarterCards:false};
     cards.forEach(c=>{
@@ -724,7 +737,10 @@
         const name = document.createElement('div'); name.className='name';
         const cardId = c.ID || c.Id || c.id;
         const isNew = cardId && newCards.has(cardId);
-        
+        const rarityGlow = document.createElement('div');
+        rarityGlow.className = 'card-glow';
+        rarityGlow.style.setProperty('--glow-color', getRarityGlowColor(c.Rarity || c['Rarity'] || ''));
+
         if(isNew){
           const newBadge = document.createElement('span');
           newBadge.className = 'new-badge';
@@ -753,28 +769,50 @@
         }
         
         const rarity = document.createElement('div'); rarity.className='rarity'; rarity.textContent = c.Rarity || c['Rarity'] || '';
-        cardEl.appendChild(inner); 
-        cardEl.appendChild(name); 
+        cardEl.appendChild(inner);
+        cardEl.appendChild(rarityGlow);
+        cardEl.appendChild(name);
         if(setInfo) cardEl.appendChild(setInfo);
         cardEl.appendChild(rarity);
         grid.appendChild(cardEl);
       });
-        // Wire up Flip All button to flip every card in this pack
+        // Wire up Flip All button to flip every card in this pack one-by-one
         const flipBtn = header.querySelector('.flip-all-btn');
         if(flipBtn){
           flipBtn.addEventListener('click', ()=>{
-            const inners = grid.querySelectorAll('.card .card-inner');
-            inners.forEach(inner => {
-              if(!inner.classList.contains('is-flipped')){
-                inner.classList.add('is-flipped');
+            if(flipBtn.dataset.autoFlipping === 'true') return;
+
+            const inners = Array.from(grid.querySelectorAll('.card .card-inner'));
+            const pending = inners.filter(inner => !inner.classList.contains('is-flipped'));
+            if(!pending.length) return;
+
+            flipBtn.dataset.autoFlipping = 'true';
+            let currentIndex = 0;
+
+            const revealNext = ()=>{
+              const inner = pending[currentIndex];
+              if(!inner){
+                flipBtn.dataset.autoFlipping = 'false';
+                return;
               }
+
+              inner.classList.add('is-flipped');
               if(!inner.dataset.addedToCollection){
                 inner.dataset.addedToCollection = 'true';
                 const idx = parseInt(inner.dataset.index,10);
                 const cardObj = pack[idx];
                 if(cardObj) addCardToCollection(cardObj);
               }
-            });
+
+              currentIndex += 1;
+              if(currentIndex < pending.length){
+                setTimeout(revealNext, 3000);
+              } else {
+                flipBtn.dataset.autoFlipping = 'false';
+              }
+            };
+
+            revealNext();
           });
         }
       packEl.appendChild(grid);
