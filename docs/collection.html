@@ -663,12 +663,17 @@
     function getCollectionRarityBucket(raw){
       const r = normalizeCollectionRarity(raw);
       if(!r) return '';
+      if(r.includes('urv')) return 'URV';
+      if(r.includes('r+v')) return 'R+V';
+      if(r.includes('rv')) return 'RV';
+      if(r.includes('uv')) return 'UV';
+      if(r.includes('cv')) return 'CV';
       if(r.includes('foil')) return 'Foil';
-      if(r.includes('ultra') || r.includes('urv')) return 'Ultra Rare';
-      if(r.includes('rare plus') || r.includes('rare+') || r.includes('r+v')) return 'Rare Plus';
-      if(r.includes('rare') || r.includes('rv') || r.includes('r/v')) return 'Rare';
-      if(r.includes('uncommon') || r.includes('uv') || r.includes('u/v')) return 'Uncommon';
-      if(r.includes('common') || r.includes('cv') || r.includes('c/v')) return 'Common';
+      if(r.includes('ultra')) return 'Ultra Rare';
+      if(r.includes('rare plus') || r.includes('rare+')) return 'Rare Plus';
+      if(r.includes('rare')) return 'Rare';
+      if(r.includes('uncommon')) return 'Uncommon';
+      if(r.includes('common')) return 'Common';
       if(r.includes('promo')) return 'Promo';
       if(r.includes('starter') || r.includes('sta')) return 'STA';
       return '';
