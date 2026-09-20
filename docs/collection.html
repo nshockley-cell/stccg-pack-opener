@@ -155,6 +155,32 @@
       background: #123a58;
     }
     .filter-result-count { margin-left: auto; color: #94a3b8; font-family: 'Futura', sans-serif; }
+    .duplicate-sell-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0 16px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 8px;
+    }
+    .duplicate-sell-button {
+      padding: 7px 12px;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: 6px;
+      background: #78350f;
+      color: #fef3c7;
+      cursor: pointer;
+      font-family: 'Futura', sans-serif;
+      font-size: 0.85rem;
+    }
+    .duplicate-sell-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
     @media(min-width: 1200px) {
       .cards-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
@@ -571,6 +597,63 @@
       return duplicateCount;
     }
 
+    function getSetRarityDuplicateSummary(setCode, scope = 'selected') {
+      const cards = scope === 'selected' ? (bySet[setCode] || []) : (
+        scope === 'physical' ? allCards.filter(card => physicalSetCodes.includes((card['Set Code'] || '').trim())) :
+        allCards.filter(card => virtualSetCodes.includes((card['Set Code'] || '').trim()))
+      );
+      const summary = {};
+      cards.forEach(card => {
+        const rarityLabel = getCollectionRarityBucket(card.Rarity || card['Rarity']);
+        if(!rarityLabel) return;
+        const id = card.ID || card.Id || card.id;
+        const entry = id ? col[id] : null;
+        const count = Number(entry && entry.count ? entry.count : 0);
+        const duplicates = Math.max(0, count - 1);
+        if(duplicates <= 0) return;
+        if(!summary[rarityLabel]) {
+          summary[rarityLabel] = { duplicates: 0, value: 0 };
+        }
+        const value = getTradeValue(card);
+        summary[rarityLabel].duplicates += duplicates;
+        summary[rarityLabel].value += duplicates * value;
+      });
+      return summary;
+    }
+
+    function sellAllDuplicateCardsByRarity(setCode, rarityLabel, filterState = {}) {
+      const collection = loadCollection();
+      const cards = (bySet[setCode] || []).filter(card => getCollectionRarityBucket(card.Rarity || card['Rarity']) === rarityLabel);
+      let totalValue = 0;
+      cards.forEach(card => {
+        const id = card.ID || card.Id || card.id;
+        if(!id || !collection[id]) return;
+        const entry = collection[id];
+        const duplicateCount = Math.max(0, Number(entry.count || 0) - 1);
+        if(duplicateCount <= 0) return;
+        const value = getTradeValue(card);
+        totalValue += duplicateCount * value;
+        entry.count = 1;
+        entry.collected = true;
+      });
+      if(totalValue <= 0) return 0;
+      localStorage.setItem('stccg_collection', JSON.stringify(collection));
+      const currentBalance = Number.parseInt(localStorage.getItem('stccg_coins') || '0', 10) || 0;
+      localStorage.setItem('stccg_coins', String(currentBalance + totalValue));
+      col = collection;
+      updateCollectionCoinDisplay();
+      renderSetTiles();
+      renderSetDetail(
+        setCode,
+        filterState.scope || 'selected',
+        filterState.cardType || '',
+        filterState.affiliation || '',
+        filterState.rarity || '',
+        filterState.search || ''
+      );
+      return totalValue;
+    }
+
     function normalizeCollectionRarity(raw){
       return String(raw || '').trim().toLowerCase();
     }
@@ -696,6 +779,14 @@
       const packsDisplay = scope === 'selected' && packsOpened > 0 ? `<div style="font-family: 'Futura', sans-serif; font-size: 0.95rem; color: #64748b; margin-bottom: 8px; text-align: center;">📦 ${packsOpened} pack${packsOpened !== 1 ? 's' : ''} opened</div>` : '';
       
       const setTitle = scope === 'physical' ? 'All Physical Sets' : scope === 'virtual' ? 'All Virtual Sets' : (bySet[setCode]?.[0]?.['Set Name'] || setCode);
+      const duplicateSummary = scope === 'selected' ? getSetRarityDuplicateSummary(setCode, scope) : {};
+      const duplicateActions = scope === 'selected' ? Object.entries(duplicateSummary)
+        .map(([rarityLabel, stats]) => `
+          <button class="duplicate-sell-button" type="button" data-rarity-sell="${rarityLabel}" ${stats.duplicates > 0 ? '' : 'disabled'}>
+            Sell ${rarityLabel} dupes (${stats.duplicates} • ${stats.value} Latinum)
+          </button>
+        `)
+        .join('') : '';
       detailView.innerHTML = `
         <div class="back-button"><button onclick="goBack()">← Back to Sets</button></div>
         <div class="collection-detail">
@@ -735,6 +826,7 @@
           <div style="font-family: 'Futura', sans-serif; font-size: 1rem; color: #94a3b8; margin-bottom: 16px; text-align: center;">
             ${rarityDisplay}
           </div>
+          ${scope === 'selected' ? `<div class="duplicate-sell-bar">${duplicateActions || '<span style="color:#94a3b8; font-size:0.9rem;">No duplicate rarities to sell</span>'}</div>` : ''}
           <div class="cards-grid" id="cards-grid"></div>
         </div>
       `;
@@ -784,6 +876,25 @@
         raritySelect.value = '';
         searchInput.value = '';
         renderSetDetail(setCode, 'selected', '', '', '', '');
+      });
+
+      document.querySelectorAll('[data-rarity-sell]').forEach(button => {
+        button.addEventListener('click', () => {
+          const rarityLabel = button.getAttribute('data-rarity-sell');
+          if(!rarityLabel) return;
+          const summary = getSetRarityDuplicateSummary(setCode, 'selected');
+          const stats = summary[rarityLabel] || { duplicates: 0, value: 0 };
+          if(stats.duplicates <= 0) return;
+          if(!confirm(`Sell all duplicate ${rarityLabel.toLowerCase()} cards for ${stats.value} Bars of Gold Pressed Latinum?`)) return;
+          const filterState = {
+            scope: document.getElementById('collection-scope').value,
+            cardType: cardTypeSelect.value,
+            affiliation: affiliationSelect.value,
+            rarity: raritySelect.value,
+            search: searchInput.value
+          };
+          sellAllDuplicateCardsByRarity(setCode, rarityLabel, filterState);
+        });
       });
 
       const grid = document.getElementById('cards-grid');
